@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YooX", "YooX\YooX.csproj", "{495D4081-8B21-4D4A-94F4-199837EB3690}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YooTools", "YooTools\YooTools.csproj", "{F5CB4266-C266-4E62-87B8-002C4D250B79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{495D4081-8B21-4D4A-94F4-199837EB3690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{495D4081-8B21-4D4A-94F4-199837EB3690}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{495D4081-8B21-4D4A-94F4-199837EB3690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{495D4081-8B21-4D4A-94F4-199837EB3690}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5CB4266-C266-4E62-87B8-002C4D250B79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5CB4266-C266-4E62-87B8-002C4D250B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5CB4266-C266-4E62-87B8-002C4D250B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5CB4266-C266-4E62-87B8-002C4D250B79}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF8A0CF6-88AA-4B56-9A09-24A981F44F12}
+	EndGlobalSection
+EndGlobal
