@@ -9,6 +9,8 @@ namespace YooTools.ProjectFolders {
             var assets = GenerateFolderStructure();
             CreateFolders(assets);
 
+            AssetDatabase.Refresh();
+
             if (AssetDatabase.IsValidFolder($"Assets/{Application.productName}")) {
                 if (AssetDatabase.IsValidFolder($"Assets/{Application.productName}/Settings")) {
                     if (AssetDatabase.IsValidFolder($"Assets/{Application.productName}/Settings/Renderer")) {
@@ -19,32 +21,37 @@ namespace YooTools.ProjectFolders {
                         AssetDatabase.MoveAsset("Assets/Settings/Lit2DSceneTemplate.scenetemplate", $"Assets/{Application.productName}/Settings/Renderer/Lit2DSceneTemplate.scenetemplate");
                         AssetDatabase.MoveAsset($"Assets/Settings/Scenes/URP2DSceneTemplate.unity", $"Assets/{Application.productName}/Settings/Renderer/Scenes/URP2DSceneTemplate.unity");
 
+                        AssetDatabase.Refresh();
+
                         AssetDatabase.MoveAsset("Assets/Settings/Mobile_Renderer.asset", $"Assets/{Application.productName}/Settings/Renderer/Mobile_Renderer.asset");
                         AssetDatabase.MoveAsset("Assets/Settings/Mobile_RPAsset.asset", $"Assets/{Application.productName}/Settings/Renderer/Mobile_RPAsset.asset");
                         AssetDatabase.MoveAsset("Assets/Settings/PC_Renderer.asset", $"Assets/{Application.productName}/Settings/Renderer/PC_Renderer.asset");
                         AssetDatabase.MoveAsset("Assets/Settings/PC_RPAsset.asset", $"Assets/{Application.productName}/Settings/Renderer/PC_RPAsset.asset");
                         AssetDatabase.MoveAsset("Assets/Settings/SampleSceneProfile.asset", $"Assets/{Application.productName}/Settings/Renderer/SampleSceneProfile.asset");
 
-                        if (AssetDatabase.IsValidFolder("Assets/Settings/HDRPDefaultResources")) {
+                        AssetDatabase.Refresh();
 
-                            AssetDatabase.MoveAsset("Assets/Settings/HDRP Balanced.asset", $"Assets/{Application.productName}/Settings/Renderer/HDRP Balanced.asset");
-                            AssetDatabase.MoveAsset("Assets/Settings/HDRP High Fidelity.asset", $"Assets/{Application.productName}/Settings/Renderer/HDRP High Fidelity.asset");
-                            AssetDatabase.MoveAsset("Assets/Settings/HDRP Performant.asset", $"Assets/{Application.productName}/Settings/Renderer/HDRP Performant.asset");
-                            AssetDatabase.MoveAsset("Assets/Settings/SkyandFogSettingsProfile.asset", $"Assets/{Application.productName}/Settings/Renderer/SkyandFogSettingsProfile.asset");
-                        }
+                        AssetDatabase.MoveAsset("Assets/Settings/HDRP Balanced.asset", $"Assets/{Application.productName}/Settings/Renderer/HDRP Balanced.asset");
+                        AssetDatabase.MoveAsset("Assets/Settings/HDRP High Fidelity.asset", $"Assets/{Application.productName}/Settings/Renderer/HDRP High Fidelity.asset");
+                        AssetDatabase.MoveAsset("Assets/Settings/HDRP Performant.asset", $"Assets/{Application.productName}/Settings/Renderer/HDRP Performant.asset");
+                        AssetDatabase.MoveAsset("Assets/Settings/SkyandFogSettingsProfile.asset", $"Assets/{Application.productName}/Settings/Renderer/SkyandFogSettingsProfile.asset");
+
+                        AssetDatabase.Refresh();
 
                         AssetDatabase.DeleteAsset("Assets/Settings");
                     }
 
                     if (AssetDatabase.IsValidFolder($"Assets/{Application.productName}/Settings/Resources")) {
                         AssetDatabase.MoveAsset("Assets/InputSystem_Actions.inputactions", $"Assets/{Application.productName}/Settings/Resources/InputSystem_Actions.inputactions");
+                        AssetDatabase.Refresh();
                     }
                 }
 
                 if (AssetDatabase.IsValidFolder($"Assets/{Application.productName}/Scenes")) {
-                    AssetDatabase.MoveAsset("Assets/Scenes/SampleScene.unity", $"Assets/{Application.productName}/SceneSampleScene.unity");
-                    AssetDatabase.MoveAsset("Assets/OutDoorsScene.unity", $"Assets/{Application.productName}/Scene/OutDoorsScene.unity");
+                    AssetDatabase.MoveAsset("Assets/Scenes/SampleScene.unity", $"Assets/{Application.productName}/Scenes/SampleScene.unity");
+                    AssetDatabase.MoveAsset("Assets/OutDoorsScene.unity", $"Assets/{Application.productName}/Scenes/OutDoorsScene.unity");
                     AssetDatabase.DeleteAsset("Assets/Scenes");
+                    AssetDatabase.Refresh();
                 }
 
                 AssetDatabase.MoveAsset("Assets/YooTools.dll", $"Assets/{Application.productName}/Plugins/Editor/YooTools.dll");
@@ -84,7 +91,7 @@ namespace YooTools.ProjectFolders {
 
         private static void CreateFolders(Folder rootFolder) {
             if (!AssetDatabase.IsValidFolder(rootFolder.CurrentFolder)) {
-                Debug.Log("Creating: <b>" + rootFolder.CurrentFolder + "</b>");
+                Debug.Log($"Creating: <b>{rootFolder.CurrentFolder}</b>");
 
                 AssetDatabase.CreateFolder(rootFolder.ParentFolder, rootFolder.Name);
 

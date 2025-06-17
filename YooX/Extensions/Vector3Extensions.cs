@@ -81,6 +81,23 @@ namespace YooX {
             Vector3 position = new Vector3(direction.x, 0, direction.y) * distance;
             return origin + position;
         }
+
+        /// <summary>
+        /// Adds a random offset to the components of a <see cref="Vector3"/> within the specified range.
+        /// </summary>
+        /// <param name="vector">The original vector to which the random offset will be applied.</param>
+        /// <param name="range">The maximum absolute value of random offsets that can be added 
+        /// or subtracted to/from each component of the vector.</param>
+        /// <returns>A new <see cref="Vector3"/> with random offsets applied to its X, Y, and Z components.
+        /// Each offset is in the range [-<paramref name="range"/>, <paramref name="range"/>].</returns>
+        public static Vector3 RandomOffset(this Vector3 vector, float range) {
+            return vector + new Vector3(
+                Random.Range(-range, range),
+                Random.Range(-range, range),
+                Random.Range(-range, range)
+            );
+        }
+
     }
 
 }
