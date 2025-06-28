@@ -39,21 +39,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEditor">
-      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\6000.1.6f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
+    <Reference Include="UnityEditor, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\6000.1.9f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\6000.1.6f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\6000.1.9f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    
     <Compile Include="Editor Extensions\ExtendScriptableObjectDrawer.cs" />
-    <Compile Include="Editor Extensions\Group.cs" />   
+    <Compile Include="Editor Extensions\Group.cs" />
     <Compile Include="Hierarchy Icon Display\HierarchyIconDisplay.cs" />
     <Compile Include="Hierarchy Icon Display\UnityEditorBackgroundColor.cs" />
     <Compile Include="Import Asset\Asset.cs" />
-    <Compile Include="Import Asset\ImportAssetEditor.cs" />    
+    <Compile Include="Import Asset\ImportAssetEditor.cs" />
     <Compile Include="Import Package\ImportPackageEditor.cs" />
     <Compile Include="Import Package\Package.cs" />
     <Compile Include="Project Folders\Folder.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Version Control\VersionBuildPreProcessor.cs" />
     <Compile Include="Version Control\Version.cs" />
     <Compile Include="Version Control\VersionControl.cs" />
- 
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
