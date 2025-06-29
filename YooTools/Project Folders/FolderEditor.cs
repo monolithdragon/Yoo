@@ -1,5 +1,4 @@
-﻿using System.IO;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace YooTools.ProjectFolders {
@@ -95,24 +94,26 @@ namespace YooTools.ProjectFolders {
 
                 AssetDatabase.CreateFolder(rootFolder.ParentFolder, rootFolder.Name);
 
-                File.Create(Directory.GetCurrentDirectory()
-                                + Path.DirectorySeparatorChar
-                                + rootFolder.CurrentFolder
-                                + Path.DirectorySeparatorChar
-                                + ".keep");
-            } else {
-                if (Directory.GetFiles(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + rootFolder.CurrentFolder).Length < 1) {
+                //File.Create(Directory.GetCurrentDirectory()
+                //                + Path.DirectorySeparatorChar
+                //                + rootFolder.CurrentFolder
+                //                + Path.DirectorySeparatorChar
+                //                + ".keep");
 
-                    File.Create(Directory.GetCurrentDirectory()
-                                + Path.DirectorySeparatorChar
-                                + rootFolder.CurrentFolder
-                                + Path.DirectorySeparatorChar
-                                + ".keep");
+                //Debug.Log($"Creating '.keep' file in: <b>{rootFolder.CurrentFolder}</b>");
+                //} else {
+                //    if (Directory.GetFiles(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + rootFolder.CurrentFolder).Length < 1) {
 
-                    Debug.Log("Creating '.keep' file in: <b>" + rootFolder.CurrentFolder + "</b>");
-                } else {
-                    Debug.Log("Directory <b>" + rootFolder.CurrentFolder + "</b> already exists");
-                }
+                //        File.Create(Directory.GetCurrentDirectory()
+                //                    + Path.DirectorySeparatorChar
+                //                    + rootFolder.CurrentFolder
+                //                    + Path.DirectorySeparatorChar
+                //                    + ".keep");
+
+
+                //    } else {
+                //        Debug.Log($"Directory <b>{rootFolder.CurrentFolder}</b> already exists");
+                //    }
             }
 
             foreach (var folder in rootFolder.Folders) {
@@ -122,7 +123,6 @@ namespace YooTools.ProjectFolders {
 
         private static Folder GenerateFolderStructure() {
             var rootFolder = new Folder("Assets", "");
-            rootFolder.Add("ThirdParty");
 
             var subFolder = rootFolder.Add(Application.productName);
             subFolder.Add("Effects");
@@ -132,7 +132,7 @@ namespace YooTools.ProjectFolders {
             pluginFolder.Add("Editor");
 
             subFolder.Add("Prefabs");
-            subFolder.Add("ScriptableObjects");
+            subFolder.Add("Scriptables");
 
             var scriptFolder = subFolder.Add("Scripts");
             scriptFolder.Add("Editor");
@@ -152,13 +152,13 @@ namespace YooTools.ProjectFolders {
             artFolder.Add("Sprites");
             artFolder.Add("Audio");
 
-            var settingsFolder = subFolder.Add("Settings");
-            var uiFolder = settingsFolder.Add("UIToolkit");
+            var uiFolder = subFolder.Add("UIToolkit");
             uiFolder.Add("Layouts");
             uiFolder.Add("Settings");
             uiFolder.Add("Styles");
             uiFolder.Add("Theme");
 
+            var settingsFolder = subFolder.Add("Settings");
             var rendererFolder = settingsFolder.Add("Renderer");
             rendererFolder.Add("Scenes");
 

@@ -5,9 +5,9 @@ namespace YooTools.ProjectFolders {
     public class Folder {
         public readonly List<Folder> Folders;
 
-        public string Name { get; }
-        public string CurrentFolder { get; }
-        public string ParentFolder { get; }
+        public string Name { get; private set; }
+        public string CurrentFolder { get; private set; }
+        public string ParentFolder { get; private set; }
 
         public Folder(string name, string parentFolder) {
             Name = name;
