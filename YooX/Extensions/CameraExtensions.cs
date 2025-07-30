@@ -15,10 +15,10 @@ namespace YooX {
         /// A Vector2 representing the extents (x: horizontal, y: vertical) at the near clip plane, including the margin.
         /// </returns>
         public static Vector2 GetViewportExtentsWithMargin(this Camera camera, Vector2? viewportMargin = null) {
-            Vector2 margin = viewportMargin ?? new Vector2(0.2f, 0.2f);
+            var margin = viewportMargin ?? new Vector2(0.2f, 0.2f);
 
             Vector2 result;
-            float halfFieldOfView = camera.fieldOfView * 0.5f * Mathf.Deg2Rad;
+            var halfFieldOfView = camera.fieldOfView * 0.5f * Mathf.Deg2Rad;
             result.y = camera.nearClipPlane * Mathf.Tan(halfFieldOfView);
             result.x = result.y * camera.aspect + margin.x;
             result.y += margin.y;

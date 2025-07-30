@@ -36,13 +36,13 @@ namespace YooX {
         /// <param name="maxRadius">Maximum radius of the annulus.</param>
         /// <returns>A random Vector2 point within the specified annulus.</returns>
         public static Vector2 RandomPointInAnnulus(this Vector2 origin, float minRadius, float maxRadius) {
-            float angle = Random.value * Mathf.PI * 2f;
+            var angle = Random.value * Mathf.PI * 2f;
             var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
 
             // Squaring and then square-rooting radii to ensure uniform distribution within the annulus
-            float minRadiusSquared = minRadius * minRadius;
-            float maxRadiusSquared = maxRadius * maxRadius;
-            float distance = Mathf.Sqrt(Random.value * (maxRadiusSquared - minRadiusSquared) + minRadiusSquared);
+            var minRadiusSquared = minRadius * minRadius;
+            var maxRadiusSquared = maxRadius * maxRadius;
+            var distance = Mathf.Sqrt(Random.value * (maxRadiusSquared - minRadiusSquared) + minRadiusSquared);
 
             // Calculate the position vector
             Vector2 position = direction * distance;

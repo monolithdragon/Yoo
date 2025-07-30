@@ -24,7 +24,7 @@ namespace YooX {
 
             var path = default(PropertyPath);
             foreach (var part in pathString.Split('.')) {
-                int bracketStart = part.IndexOf('[');
+                var bracketStart = part.IndexOf('[');
                 if (bracketStart < 0) {
                     path = PropertyPath.AppendName(path, part);
                     continue;

@@ -14,7 +14,7 @@ namespace YooX {
         /// so there is some GC overhead.
         /// </summary>
         /// <param name="list">List to evaluate</param>
-        public static bool IsNullOrEmpty<T>(this IList<T> list) {
+        public static bool IsNullOrEmpty<T>(this IList<T>? list) {
             return list == null || !list.Any();
         }
 
@@ -24,7 +24,7 @@ namespace YooX {
         /// <param name="list">The original list to be copied.</param>
         /// <returns>A new list that is a copy of the original list.</returns>
         public static List<T> Clone<T>(this IList<T> list) {
-            List<T> newList = new List<T>();
+            var newList = new List<T>();
             newList.AddRange(list);
             return newList;
         }
@@ -49,10 +49,10 @@ namespace YooX {
         /// <returns>The shuffled list.</returns>
         public static IList<T> Shuffle<T>(this IList<T> list) {
             rng ??= new Random();
-            int count = list.Count;
+            var count = list.Count;
             while (count > 1) {
                 --count;
-                int index = rng.Next(count + 1);
+                var index = rng.Next(count + 1);
                 (list[index], list[count]) = (list[count], list[index]);
             }
             return list;
@@ -66,13 +66,7 @@ namespace YooX {
         /// <param name="predicate">The condition that each element is tested against.</param>
         /// <returns>A new list containing elements that satisfy the predicate.</returns>
         public static IList<T> Filter<T>(this IList<T> source, Predicate<T> predicate) {
-            List<T> list = new List<T>();
-            foreach (T item in source) {
-                if (predicate(item)) {
-                    list.Add(item);
-                }
-            }
-            return list;
+            return source.Where(item => predicate(item)).ToList();
         }
 
         /// <summary>

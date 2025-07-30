@@ -30,6 +30,7 @@ namespace YooX {
         /// </summary>
         /// <param name="task">The task to be forgotten.</param>
         /// <param name="onException">The optional action to execute when an exception is caught. If provided, the exception will not be rethrown.</param>
+        /// <exception cref="Exception"></exception>
         public static async void Forget(this Task task, Action<Exception>? onException = null) {
             try {
                 await task;
@@ -37,7 +38,7 @@ namespace YooX {
                 if (onException == null)
                     throw exception;
 
-                onException(exception);
+                onException.Invoke(exception);
             }
         }
     }

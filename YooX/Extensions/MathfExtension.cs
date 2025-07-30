@@ -13,13 +13,13 @@ namespace YooX {
         }
 
         public static half Min(params half[] values) {
-            int num = values.Length;
+            var num = values.Length;
             if (num == 0) {
                 return (half) 0;
             }
 
-            half num2 = values[0];
-            for (int i = 1; i < num; i++) {
+            var num2 = values[0];
+            for (var i = 1; i < num; i++) {
                 if (values[i] < num2) {
                     num2 = values[i];
                 }
@@ -34,13 +34,13 @@ namespace YooX {
         }
 
         public static double Min(params double[] values) {
-            int num = values.Length;
+            var num = values.Length;
             if (num == 0) {
                 return 0f;
             }
 
-            double num2 = values[0];
-            for (int i = 1; i < num; i++) {
+            var num2 = values[0];
+            for (var i = 1; i < num; i++) {
                 if (values[i] < num2) {
                     num2 = values[i];
                 }
@@ -59,12 +59,12 @@ namespace YooX {
         }
 
         public static half Max(params half[] values) {
-            int num = values.Length;
+            var num = values.Length;
             if (num == 0) {
                 return (half) 0;
             }
 
-            half num2 = values[0];
+            var num2 = values[0];
             for (int i = 1; i < num; i++) {
                 if (values[i] > num2) {
                     num2 = values[i];
@@ -80,13 +80,13 @@ namespace YooX {
         }
 
         public static double Max(params double[] values) {
-            int num = values.Length;
+            var num = values.Length;
             if (num == 0) {
                 return 0f;
             }
 
-            double num2 = values[0];
-            for (int i = 1; i < num; i++) {
+            var num2 = values[0];
+            for (var i = 1; i < num; i++) {
                 if (values[i] > num2) {
                     num2 = values[i];
                 }

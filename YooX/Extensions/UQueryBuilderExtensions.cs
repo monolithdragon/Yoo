@@ -34,7 +34,7 @@ namespace YooX {
         /// Returns the first element of a sequence, or a default value if no element is found.
         /// </summary>
         /// <param name="query">The elements to search in.</param>
-        public static T FirstOrDefault<T>(this UQueryBuilder<T> query)
+        public static T? FirstOrDefault<T>(this UQueryBuilder<T> query)
             where T : VisualElement {
             return query.ToList().FirstOrDefault();
         }

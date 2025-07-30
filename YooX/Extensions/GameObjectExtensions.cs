@@ -24,7 +24,7 @@ namespace YooX {
         /// <param name="gameObject">The GameObject to get the component from or add the component to.</param>
         /// <returns>The existing component of the given type, or a new one if no such component exists.</returns>    
         public static T GetOrAdd<T>(this GameObject gameObject) where T : Component {
-            T component = gameObject.GetComponent<T>();
+            var component = gameObject.GetComponent<T>();
             if (!component)
                 component = gameObject.AddComponent<T>();
 

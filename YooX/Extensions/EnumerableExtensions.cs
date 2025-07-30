@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace YooX {
     public static class EnumerableExtensions {
@@ -44,8 +45,8 @@ namespace YooX {
             if (!enumerator.MoveNext())
                 throw new InvalidOperationException("Cannot get a random element from an empty collection.");
 
-            T result = enumerator.Current;
-            int count = 1;
+            var result = enumerator.Current;
+            var count = 1;
             while (enumerator.MoveNext()) {
                 if (UnityEngine.Random.Range(0, ++count) == 0) {
                     result = enumerator.Current;
@@ -60,12 +61,10 @@ namespace YooX {
         /// </summary>
         /// <param name="enumerable">The non-generic sequence to count elements from.</param>
         /// <returns>The number of elements in the sequence, or 0 if the sequence is null.</returns>
-        public static int CountEnumerable(this IEnumerable enumerable) {
-            int count = 0;
+        public static int CountEnumerable(this IEnumerable? enumerable) {
+            var count = 0;
             if (enumerable != null) {
-                foreach (object _ in enumerable) {
-                    count++;
-                }
+                count += enumerable.Cast<object>().Count();
             }
             return count;
         }

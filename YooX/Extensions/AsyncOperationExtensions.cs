@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace YooX {
     public static class AsyncOperationExtensions {
-        /// <sumary>
+        /// <summary>
         /// Converts a Unity <see cref="AsyncOperation"/> to a <see cref="Task"/> that completes when the operation is done.
         /// </summary>
         /// <param name="asyncOperation">The Unity async operation to await.</param>

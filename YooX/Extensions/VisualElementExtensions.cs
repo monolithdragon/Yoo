@@ -55,7 +55,7 @@ namespace YooX {
         /// <param name="classes">The CSS classes to add.</param>
         /// <returns>The VisualElement with the added classes.</returns>
         public static T AddClass<T>(this T visualElement, params string[] classes) where T : VisualElement {
-            foreach (string cls in classes) {
+            foreach (var cls in classes) {
                 if (!string.IsNullOrEmpty(cls)) {
                     visualElement.AddToClassList(cls);
                 }
@@ -67,7 +67,7 @@ namespace YooX {
         /// See <see cref="AddClass{T}(T, string[])"/> for adding classes.
         /// </remarks>
         public static void RemoveClass<T>(this T visualElement, params string[] classes) where T : VisualElement {
-            foreach (string cls in classes) {
+            foreach (var cls in classes) {
                 if (!string.IsNullOrEmpty(cls)) {
                     visualElement.RemoveFromClassList(cls);
                 }
