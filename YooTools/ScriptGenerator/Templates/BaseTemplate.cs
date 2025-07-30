@@ -6,14 +6,14 @@ namespace YooTools.ScriptGenerator.Templates {
     /// Base class for basic C# source files.
     /// </summary>
     public abstract class BaseTemplate : ScriptTemplateGenerator {
-        private readonly string typeKeyword;
+        private readonly string _typeKeyword;
 
         /// <summary>
         /// Initialize a new <see cref="BaseTemplate"/> instance.
         /// </summary>
         /// <param name="typeKeyword">>Keyword of type; for instance, 'class'</param>
         public BaseTemplate(string typeKeyword) {
-            this.typeKeyword = typeKeyword;
+            _typeKeyword = typeKeyword;
         }
 
         /// <inheritdoc/>
@@ -27,7 +27,7 @@ namespace YooTools.ScriptGenerator.Templates {
             if (!IsEditorScript)
                 OutputInitializeOnLoad = false;
 
-            if (typeKeyword == "class") {
+            if (_typeKeyword == "class") {
                 EditorGUI.BeginDisabledGroup(!IsEditorScript);
                 OutputInitializeOnLoad = EditorGUILayout.ToggleLeft("Initialize On Load", OutputInitializeOnLoad);
                 EditorGUI.EndDisabledGroup();
@@ -40,7 +40,7 @@ namespace YooTools.ScriptGenerator.Templates {
             EditorGUILayout.PrefixLabel("Visibility");
             ScriptTypeVisibility = (TypeVisibility)EditorGUILayout.EnumPopup(ScriptTypeVisibility);
 
-            if (typeKeyword == "class") {
+            if (_typeKeyword == "class") {
                 AbstractClass = EditorGUILayout.ToggleLeft("Abstract", AbstractClass);
                 StaticClass = EditorGUILayout.ToggleLeft("Static", StaticClass);
                 PartialClass = EditorGUILayout.ToggleLeft("Partial", PartialClass);
@@ -49,7 +49,7 @@ namespace YooTools.ScriptGenerator.Templates {
 
         /// <inheritdoc/>
 		public override string GenerateScript(string scriptName, string ns) {
-            ScriptBuilder sb = CreateScriptBuilder();
+            var sb = CreateScriptBuilder();
 
             sb.AppendLine("using UnityEngine;");
             if (IsEditorScript)
@@ -60,7 +60,7 @@ namespace YooTools.ScriptGenerator.Templates {
                 sb.BeginNamespace("namespace " + ns + OpeningBraceInsertion);
 
             // Automatically initialize on load?
-            if (typeKeyword == "class" && (IsEditorScript && OutputInitializeOnLoad))
+            if (_typeKeyword == "class" && (IsEditorScript && OutputInitializeOnLoad))
                 sb.AppendLine("[InitializeOnLoad]");
 
             // Build type declaration string.
@@ -71,7 +71,7 @@ namespace YooTools.ScriptGenerator.Templates {
             else if (ScriptTypeVisibility == TypeVisibility.Internal)
                 declaration.Add("internal");
 
-            if (typeKeyword == "class") {
+            if (_typeKeyword == "class") {
                 if (AbstractClass)
                     declaration.Add("abstract");
                 else if (StaticClass)
@@ -80,13 +80,13 @@ namespace YooTools.ScriptGenerator.Templates {
                     declaration.Add("partial");
             }
 
-            declaration.Add(typeKeyword);
+            declaration.Add(_typeKeyword);
             declaration.Add(scriptName);
 
             sb.BeginNamespace(string.Join(" ", declaration.ToArray()) + OpeningBraceInsertion);
 
             // Automatically initialize on load?
-            if (typeKeyword == "class" && (IsEditorScript && OutputInitializeOnLoad || OutputStaticConstructor))
+            if (_typeKeyword == "class" && (IsEditorScript && OutputInitializeOnLoad || OutputStaticConstructor))
                 sb.AppendLine("static " + scriptName + "()" + OpeningBraceInsertion + "\n}\n");
 
             sb.EndNamespace("}");

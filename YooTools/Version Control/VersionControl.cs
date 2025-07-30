@@ -1,14 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 
 namespace YooTools.VersionControl {
     public static class VersionControl {
-        public static bool IsGitDirectory(string path) => Directory.Exists(Path.Combine(path, ".git"));
+        private static bool IsGitDirectory(string path) => Directory.Exists(Path.Combine(path, ".git"));
 
         public static string GitDirectory {
             get {
                 var currentDirectory = Directory.GetCurrentDirectory();
-                bool found = false;
+                var found = true;
                 while (found) {
                     found = IsGitDirectory(currentDirectory);
                     if (!found) {
@@ -37,8 +38,8 @@ namespace YooTools.VersionControl {
             var headFileContent = File.ReadAllText(headFilePath).Trim();
             const string refColonHeader = "ref: ";
             if (headFileContent.StartsWith(refColonHeader)) {
-                int position = headFileContent.LastIndexOf("/") + 1;
-                return headFileContent.Substring(position, headFileContent.Length - position); ;
+                var position = headFileContent.LastIndexOf("/", StringComparison.Ordinal) + 1;
+                return headFileContent.Substring(position, headFileContent.Length - position);
             }
 
             return ReturnNullAndWarn($"Tried to get git branch but headFileContent doesn't start with 'ref: '{headFileContent}");

@@ -6,12 +6,12 @@ namespace YooTools.ScriptGenerator.Templates {
     /// </summary>
     [ScriptTemplate("MonoBehaviour", 0)]
     public sealed class MonoBehaviourTemplate : ScriptTemplateGenerator {
-        private bool outputAwakeMethod;
-        private bool outputStartMethod;
-        private bool outputUpdateMethod;
-        private bool outputOnEnableMethod;
-        private bool outputOnDisableMethod;
-        private bool outputOnDestroyMethod;
+        private bool _outputAwakeMethod;
+        private bool _outputStartMethod;
+        private bool _outputUpdateMethod;
+        private bool _outputOnEnableMethod;
+        private bool _outputOnDisableMethod;
+        private bool _outputOnDestroyMethod;
 
         /// <inheritdoc/>
         public override bool WillGenerateEditorScript => false;
@@ -20,21 +20,21 @@ namespace YooTools.ScriptGenerator.Templates {
         /// Initialize new <see cref="MonoBehaviourTemplate"/> instance.
         /// </summary>
         public MonoBehaviourTemplate() {
-            outputAwakeMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Awake", false);
-            outputStartMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Start", false);
-            outputUpdateMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Update", false);
-            outputOnEnableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnEnable", false);
-            outputOnDisableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDisable", false);
-            outputOnDestroyMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDestroy", false);
+            _outputAwakeMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Awake", false);
+            _outputStartMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Start", false);
+            _outputUpdateMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Update", false);
+            _outputOnEnableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnEnable", false);
+            _outputOnDisableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDisable", false);
+            _outputOnDestroyMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDestroy", false);
         }
 
         private void UpdateEditorPrefs() {
-            EditorPrefs.SetBool("ScriptTemplates.Message.Awake", outputAwakeMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.Start", outputStartMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.Update", outputUpdateMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnEnable", outputOnEnableMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnDisable", outputOnDisableMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnDestroy", outputOnDestroyMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.Awake", _outputAwakeMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.Start", _outputStartMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.Update", _outputUpdateMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnEnable", _outputOnEnableMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnDisable", _outputOnDisableMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnDestroy", _outputOnDestroyMethod);
         }
 
         /// <inheritdoc/>
@@ -47,12 +47,12 @@ namespace YooTools.ScriptGenerator.Templates {
 
             EditorGUILayout.Space();
 
-            outputAwakeMethod = EditorGUILayout.ToggleLeft("Awake Method", outputAwakeMethod);
-            outputStartMethod = EditorGUILayout.ToggleLeft("Start Method", outputStartMethod);
-            outputUpdateMethod = EditorGUILayout.ToggleLeft("Update Method", outputUpdateMethod);
-            outputOnEnableMethod = EditorGUILayout.ToggleLeft("OnEnable Method", outputOnEnableMethod);
-            outputOnDisableMethod = EditorGUILayout.ToggleLeft("OnDisable Method", outputOnDisableMethod);
-            outputOnDestroyMethod = EditorGUILayout.ToggleLeft("OnDestroy Method", outputOnDestroyMethod);
+            _outputAwakeMethod = EditorGUILayout.ToggleLeft("Awake Method", _outputAwakeMethod);
+            _outputStartMethod = EditorGUILayout.ToggleLeft("Start Method", _outputStartMethod);
+            _outputUpdateMethod = EditorGUILayout.ToggleLeft("Update Method", _outputUpdateMethod);
+            _outputOnEnableMethod = EditorGUILayout.ToggleLeft("OnEnable Method", _outputOnEnableMethod);
+            _outputOnDisableMethod = EditorGUILayout.ToggleLeft("OnDisable Method", _outputOnDisableMethod);
+            _outputOnDestroyMethod = EditorGUILayout.ToggleLeft("OnDestroy Method", _outputOnDestroyMethod);
 
             if (EditorGUI.EndChangeCheck())
                 UpdateEditorPrefs();
@@ -74,17 +74,17 @@ namespace YooTools.ScriptGenerator.Templates {
             if (OutputStaticConstructor)
                 sb.AppendLine("static " + scriptName + "()" + OpeningBraceInsertion + "\n}\n");
 
-            if (outputAwakeMethod)
+            if (_outputAwakeMethod)
                 sb.AppendLine("private void Awake()" + OpeningBraceInsertion + "\n}\n");
-            if (outputStartMethod)
+            if (_outputStartMethod)
                 sb.AppendLine("private void Start()" + OpeningBraceInsertion + "\n}\n");
-            if (outputUpdateMethod)
+            if (_outputUpdateMethod)
                 sb.AppendLine("private void Update()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnEnableMethod)
+            if (_outputOnEnableMethod)
                 sb.AppendLine("private void OnEnable()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnDisableMethod)
+            if (_outputOnDisableMethod)
                 sb.AppendLine("private void OnDisable()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnDestroyMethod)
+            if (_outputOnDestroyMethod)
                 sb.AppendLine("private void OnDestroy()" + OpeningBraceInsertion + "\n}\n");
 
             sb.EndNamespace("}");

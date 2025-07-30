@@ -20,12 +20,12 @@ namespace YooTools.ScriptGenerator {
         [SerializeField] private string scriptNamespace = "";
         [SerializeField] private bool namespaceForSubFolders;
 
-        [NonSerialized] private string[] templateDescriptions;
+        [NonSerialized] private string[] _templateDescriptions;
 
         [SerializeField] private int templateIndex;
-        [NonSerialized] private ScriptTemplateGenerator activeGenerator;
+        [NonSerialized] private ScriptTemplateGenerator _activeGenerator;
 
-        private Vector2 scrollPosition;
+        private Vector2 _scrollPosition;
 
         private void OnEnable() {
             minSize = new Vector2(230, 100);
@@ -40,12 +40,12 @@ namespace YooTools.ScriptGenerator {
             DrawTemplateSelector();
             EditorGUILayout.Space();
 
-            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             {
                 DrawStandardInputs();
 
                 EditorGUILayout.Space();
-                activeGenerator?.OnGUI();
+                _activeGenerator?.OnGUI();
 
                 GUILayout.FlexibleSpace();
             }
@@ -53,14 +53,14 @@ namespace YooTools.ScriptGenerator {
             EditorGUILayout.EndScrollView();
 
             GUILayout.Box(GUIContent.none, GUILayout.Height(2), GUILayout.ExpandWidth(true));
-            activeGenerator?.OnStandardGUI();
+            _activeGenerator?.OnStandardGUI();
 
             DrawButtonStrip();
             EditorGUILayout.Space();
         }
 
         private void DrawTemplateSelector() {
-            templateDescriptions = ScriptGeneratorDescriptor.Descriptors
+            _templateDescriptions = ScriptGeneratorDescriptor.Descriptors
                     .Select(descriptor => descriptor.TemplateAttribute.Description)
                     .ToArray();
 
@@ -68,10 +68,10 @@ namespace YooTools.ScriptGenerator {
             EditorGUILayout.PrefixLabel("Template:");
             EditorGUI.BeginChangeCheck();
 
-            templateIndex = EditorGUILayout.Popup(templateIndex, templateDescriptions);
+            templateIndex = EditorGUILayout.Popup(templateIndex, _templateDescriptions);
 
             if (EditorGUI.EndChangeCheck())
-                activeGenerator = null;
+                _activeGenerator = null;
 
             AutoFixActiveGenerator();
         }
@@ -106,9 +106,9 @@ namespace YooTools.ScriptGenerator {
         }
 
         private void AutoFixActiveGenerator() {
-            if (activeGenerator == null) {
+            if (_activeGenerator == null) {
                 templateIndex = Mathf.Clamp(templateIndex, 0, ScriptGeneratorDescriptor.Descriptors.Count);
-                activeGenerator = ScriptGeneratorDescriptor.Descriptors[templateIndex].CreateInstance();
+                _activeGenerator = ScriptGeneratorDescriptor.Descriptors[templateIndex].CreateInstance();
             }
         }
 
@@ -120,21 +120,21 @@ namespace YooTools.ScriptGenerator {
         }
 
         private string GetDefaultOutputPath() {
-            string assetFolder = Path.Combine("Assets", activeGenerator.WillGenerateEditorScript ? Application.productName + Path.DirectorySeparatorChar + "Scripts/Editor" : Application.productName + Path.DirectorySeparatorChar + "Scripts/Runtime");
+            var assetFolder = Path.Combine("Assets", _activeGenerator.WillGenerateEditorScript ? Application.productName + Path.DirectorySeparatorChar + "Scripts/Editor" : Application.productName + Path.DirectorySeparatorChar + "Scripts/Runtime");
 
             // Use namespace for sub-folders?
             if (namespaceForSubFolders && !string.IsNullOrEmpty(scriptNamespace)) {
                 assetFolder = Path.Combine(assetFolder, scriptNamespace.Replace(".", "/"));
             } else {
-                string selectedFolderPath = SelectedFolder();
+                var selectedFolderPath = SelectedFolder();
                 if (selectedFolderPath != null && selectedFolderPath != assetFolder) {
-                    string[] splitResult = selectedFolderPath.Split('/');
+                    var splitResult = selectedFolderPath.Split('/');
                     selectedFolderPath = splitResult.LastOrDefault();
                     assetFolder = Path.Combine(assetFolder, selectedFolderPath);
                 }
             }
 
-            string outputPath = Path.Combine(Directory.GetCurrentDirectory(), assetFolder);
+            var outputPath = Path.Combine(Directory.GetCurrentDirectory(), assetFolder);
 
             // Ensure that this path actually exists.
             if (!Directory.Exists(outputPath))
@@ -149,7 +149,7 @@ namespace YooTools.ScriptGenerator {
 
         private void DoSaveAs() {
             // Prompt user to specify path to save script.
-            string path = EditorUtility.SaveFilePanel("Save New Script", GetDefaultOutputPath(), scriptName + ".cs", ".cs");
+            var path = EditorUtility.SaveFilePanel("Save New Script", GetDefaultOutputPath(), scriptName + ".cs", ".cs");
             if (!string.IsNullOrEmpty(path))
                 GenerateScriptFromTemplate(path);
         }
@@ -168,19 +168,18 @@ namespace YooTools.ScriptGenerator {
         private void ValidateScriptInputs() {
             // Ensure that valid script name was specified.
             if (!Regex.IsMatch(scriptName, @"^[A-za-z_][A-za-z_0-9]*$")) {
-                EditorUtility.DisplayDialog("Invalid Script Name", string.Format("'{0}' is not a valid type name.", scriptName), "OK");
+                EditorUtility.DisplayDialog("Invalid Script Name", $"'{scriptName}' is not a valid type name.", "OK");
                 return;
             }
             // If a namespace was specified, ensure that it is valid!
             if (!string.IsNullOrEmpty(scriptNamespace) && !Regex.IsMatch(scriptNamespace, @"^[A-za-z_][A-za-z_0-9]*(\.[A-za-z_][A-za-z_0-9]*)*$")) {
-                EditorUtility.DisplayDialog("Invalid Namespace", string.Format("'{0}' is not a valid namespace.", scriptNamespace), "OK");
-                return;
+                EditorUtility.DisplayDialog("Invalid Namespace", $"'{scriptNamespace}' is not a valid namespace.", "OK");
             }
         }
 
         private void GenerateScriptFromTemplate(string path) {
-            // Ensure that input focus is removed from text field.
-            EditorGUIUtility.keyboardControl = 0;
+            // Ensure that input focus is removed from the text field.
+            GUIUtility.keyboardControl = 0;
             EditorGUIUtility.editingTextField = false;
 
             // Ensure that path ends with '.cs'.
@@ -196,17 +195,17 @@ namespace YooTools.ScriptGenerator {
 
             ValidateScriptInputs();
 
-            string fullName = !string.IsNullOrEmpty(scriptNamespace)
+            var fullName = !string.IsNullOrEmpty(scriptNamespace)
                 ? scriptNamespace + "." + scriptName
                 : scriptName;
 
             // Warn user if their type name is not unique.
             if (!IsClassNameUnique(fullName))
-                if (!EditorUtility.DisplayDialog("Warning: Type Already Exists!", string.Format("A type already exists with the name '{0}'.\n\nIf you proceed then you will get compilation errors in the console window.", fullName), "Proceed", "Cancel"))
+                if (!EditorUtility.DisplayDialog("Warning: Type Already Exists!", $"A type already exists with the name '{fullName}'.\n\nIf you proceed then you will get compilation errors in the console window.", "Proceed", "Cancel"))
                     return;
 
             // Generate source code.
-            string sourceCode = activeGenerator.GenerateScript(scriptName, scriptNamespace);
+            var sourceCode = _activeGenerator.GenerateScript(scriptName, scriptNamespace);
             // Write to file!
             File.WriteAllText(path, sourceCode, Encoding.UTF8);
 
@@ -218,19 +217,19 @@ namespace YooTools.ScriptGenerator {
 
         private void DoCopyToClipboard() {
             // Ensure that input focus is removed from text field.
-            EditorGUIUtility.keyboardControl = 0;
+            GUIUtility.keyboardControl = 0;
             EditorGUIUtility.editingTextField = false;
 
             ValidateScriptInputs();
 
-            EditorGUIUtility.systemCopyBuffer = activeGenerator.GenerateScript(scriptName, scriptNamespace);
+            EditorGUIUtility.systemCopyBuffer = _activeGenerator.GenerateScript(scriptName, scriptNamespace);
         }
 
         private string SelectedFolder() {
-            string result = string.Empty;
-            Object[] objs = Selection.GetFiltered<Object>(SelectionMode.Assets);
-            foreach (Object obj in objs) {
-                string path = AssetDatabase.GetAssetPath(obj);
+            var result = string.Empty;
+            var objs = Selection.GetFiltered<Object>(SelectionMode.Assets);
+            foreach (var obj in objs) {
+                var path = AssetDatabase.GetAssetPath(obj);
                 if (!string.IsNullOrEmpty(path) && Directory.Exists(path)) {
                     result = path;
                     break;

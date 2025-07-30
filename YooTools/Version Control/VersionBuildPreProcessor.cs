@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -7,23 +8,25 @@ namespace YooTools.VersionControl {
     [InitializeOnLoad]
     public class VersionBuildPreProcessor : IPreprocessBuildWithReport {
         public int callbackOrder => 0;
+        
+        static VersionBuildPreProcessor() {}
 
         public void OnPreprocessBuild(BuildReport report) {
-            var versionSO = CurrentVersion.Instance;
-            var version = versionSO.version.ToVersion();
+            var versionSo = CurrentVersion.Instance;
+            var version = versionSo.version.ToVersion();
             PlayerSettings.bundleVersion = version;
 
-            var bundleVersionCode = (versionSO.version.major * 100000) + (versionSO.version.minor * 1000) + versionSO.version.build;
+            var bundleVersionCode = (versionSo.version.major * 100000) + (versionSo.version.minor * 1000) + versionSo.version.build;
             PlayerSettings.Android.bundleVersionCode = bundleVersionCode;
             PlayerSettings.macOS.buildNumber = $"{bundleVersionCode}00";
 
-            UpdateCurrentVersion(versionSO);
-            EditorUtility.SetDirty(versionSO);
+            UpdateCurrentVersion(versionSo);
+            EditorUtility.SetDirty(versionSo);
             AssetDatabase.SaveAssets();
 
         }
 
-        public void UpdateCurrentVersion(CurrentVersion currentVersion) {
+        private void UpdateCurrentVersion(CurrentVersion currentVersion) {
             if (currentVersion == null)
                 return;
 
@@ -34,7 +37,7 @@ namespace YooTools.VersionControl {
 
             currentVersion.version.buildTarget = EditorUserBuildSettings.activeBuildTarget.ToString();
             currentVersion.version.isDevelopment = Debug.isDebugBuild;
-            currentVersion.version.buildDateTime = System.DateTime.Now.ToString("u");
+            currentVersion.version.buildDateTime = DateTime.Now.ToString("u");
         }
 
     }

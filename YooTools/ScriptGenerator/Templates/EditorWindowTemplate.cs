@@ -8,14 +8,14 @@ namespace YooTools.ScriptGenerator.Templates {
     /// </summary>
     [ScriptTemplate("Editor Window", 100)]
     public sealed class EditorWindowTemplate : ScriptTemplateGenerator {
-        private bool outputOnEnableMethod;
-        private bool outputOnDisableMethod;
-        private bool outputOnGUIMethod;
-        private bool outputUpdateMethod;
-        private bool outputOnDestroyMethod;
+        private bool _outputOnEnableMethod;
+        private bool _outputOnDisableMethod;
+        private bool _outputOnGUIMethod;
+        private bool _outputUpdateMethod;
+        private bool _outputOnDestroyMethod;
 
-        private string menuItem;
-        private bool utility;
+        private string _menuItem;
+        private bool _utility;
 
         /// <inheritdoc/>
 		public override bool WillGenerateEditorScript => true;
@@ -24,25 +24,25 @@ namespace YooTools.ScriptGenerator.Templates {
 		/// Initialize new <see cref="EditorWindowTemplate"/> instance.
 		/// </summary>
 		public EditorWindowTemplate() {
-            outputOnEnableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnEnable", false);
-            outputOnDisableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDisable", false);
-            outputOnGUIMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnGUI", false);
-            outputUpdateMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Update", false);
-            outputOnDestroyMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDestroy", false);
+            _outputOnEnableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnEnable", false);
+            _outputOnDisableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDisable", false);
+            _outputOnGUIMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnGUI", false);
+            _outputUpdateMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Update", false);
+            _outputOnDestroyMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDestroy", false);
 
-            menuItem = EditorPrefs.GetString("ScriptTemplates.Shared.MenuItem", "");
-            utility = EditorPrefs.GetBool("ScriptTemplates.EditorWindow.Utility", false);
+            _menuItem = EditorPrefs.GetString("ScriptTemplates.Shared.MenuItem", "");
+            _utility = EditorPrefs.GetBool("ScriptTemplates.EditorWindow.Utility", false);
         }
 
         private void UpdateEditorPrefs() {
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnEnable", outputOnEnableMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnDisable", outputOnDisableMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnGUI", outputOnGUIMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.Update", outputUpdateMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnDestroy", outputOnDestroyMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnEnable", _outputOnEnableMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnDisable", _outputOnDisableMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnGUI", _outputOnGUIMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.Update", _outputUpdateMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnDestroy", _outputOnDestroyMethod);
 
-            EditorPrefs.SetString("ScriptTemplates.Shared.MenuItem", menuItem);
-            EditorPrefs.SetBool("ScriptTemplates.EditorWindow.Utility", utility);
+            EditorPrefs.SetString("ScriptTemplates.Shared.MenuItem", _menuItem);
+            EditorPrefs.SetBool("ScriptTemplates.EditorWindow.Utility", _utility);
         }
 
         /// <inheritdoc/>
@@ -56,23 +56,23 @@ namespace YooTools.ScriptGenerator.Templates {
 
             EditorGUILayout.Space();
 
-            outputOnEnableMethod = EditorGUILayout.ToggleLeft("OnEnable Method", outputOnEnableMethod);
-            outputOnDisableMethod = EditorGUILayout.ToggleLeft("OnDisable Method", outputOnDisableMethod);
-            outputOnGUIMethod = EditorGUILayout.ToggleLeft("OnGUI Method", outputOnGUIMethod);
-            outputUpdateMethod = EditorGUILayout.ToggleLeft("Update Method", outputUpdateMethod);
-            outputOnDestroyMethod = EditorGUILayout.ToggleLeft("OnDestroy Method", outputOnDestroyMethod);
+            _outputOnEnableMethod = EditorGUILayout.ToggleLeft("OnEnable Method", _outputOnEnableMethod);
+            _outputOnDisableMethod = EditorGUILayout.ToggleLeft("OnDisable Method", _outputOnDisableMethod);
+            _outputOnGUIMethod = EditorGUILayout.ToggleLeft("OnGUI Method", _outputOnGUIMethod);
+            _outputUpdateMethod = EditorGUILayout.ToggleLeft("Update Method", _outputUpdateMethod);
+            _outputOnDestroyMethod = EditorGUILayout.ToggleLeft("OnDestroy Method", _outputOnDestroyMethod);
 
             EditorGUILayout.Space();
 
             EditorGUILayout.PrefixLabel("Menu Item (optional)");
-            menuItem = EditorGUILayout.TextField(menuItem);
+            _menuItem = EditorGUILayout.TextField(_menuItem);
 
-            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(menuItem));
-            utility = EditorGUILayout.ToggleLeft("Utility Window", utility);
+            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(_menuItem));
+            _utility = EditorGUILayout.ToggleLeft("Utility Window", _utility);
             EditorGUI.EndDisabledGroup();
 
             if (EditorGUI.EndChangeCheck()) {
-                menuItem = menuItem.Trim();
+                _menuItem = _menuItem.Trim();
                 UpdateEditorPrefs();
             }
         }
@@ -98,28 +98,28 @@ namespace YooTools.ScriptGenerator.Templates {
             if (OutputInitializeOnLoad || OutputStaticConstructor)
                 sb.AppendLine("static " + scriptName + "()" + OpeningBraceInsertion + "\n}\n");
 
-            if (!string.IsNullOrEmpty(menuItem)) {
-                string menuName = menuItem;
+            if (!string.IsNullOrEmpty(_menuItem)) {
+                var menuName = _menuItem;
                 if (!menuName.Contains("/"))
                     menuName = Application.productName + Path.DirectorySeparatorChar + menuName;
 
-                string utilityArg = utility ? "true, " : "";
+                var utilityArg = _utility ? "true, " : "";
 
                 sb.AppendLine("[MenuItem(\"" + menuName + "\")]");
                 sb.AppendLine("private static void ShowWindow()" + OpeningBraceInsertion);
-                sb.AppendLine("\tGetWindow<" + scriptName + ">(" + utilityArg + "\"" + menuItem + "\");");
+                sb.AppendLine("\tGetWindow<" + scriptName + ">(" + utilityArg + "\"" + _menuItem + "\");");
                 sb.AppendLine("}\n");
             }
 
-            if (outputOnEnableMethod)
+            if (_outputOnEnableMethod)
                 sb.AppendLine("private void OnEnable()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnDisableMethod)
+            if (_outputOnDisableMethod)
                 sb.AppendLine("private void OnDisable()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnGUIMethod)
+            if (_outputOnGUIMethod)
                 sb.AppendLine("private void OnGUI()" + OpeningBraceInsertion + "\n}\n");
-            if (outputUpdateMethod)
+            if (_outputUpdateMethod)
                 sb.AppendLine("private void Update()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnDestroyMethod)
+            if (_outputOnDestroyMethod)
                 sb.AppendLine("private void OnDestroy()" + OpeningBraceInsertion + "\n}\n");
 
             sb.EndNamespace("}");

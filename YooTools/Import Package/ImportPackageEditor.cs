@@ -22,7 +22,7 @@ namespace YooTools.ImportPackage {
             }
         }
 
-        private async static void StartNextPackageInstallation() {
+        private static async void StartNextPackageInstallation() {
             request = Client.Add(package.Packages.Dequeue());
 
             while (!request.IsCompleted)

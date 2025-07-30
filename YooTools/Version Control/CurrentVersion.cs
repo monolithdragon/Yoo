@@ -2,7 +2,7 @@
 
 namespace YooTools.VersionControl {
     [CreateAssetMenu(fileName = "Current Version", menuName = "Yoo Tools/Current Version")]
-    public class CurrentVersion : ScriptableObject {
+    public sealed class CurrentVersion : ScriptableObject {
         public Version version;
 
         private static CurrentVersion instance;
@@ -20,19 +20,19 @@ namespace YooTools.VersionControl {
             }
         }
 
-        protected virtual void OnEnable() {
+        private void OnEnable() {
             if (instance == null) {
                 instance = this;
             }
         }
 
-        protected virtual void OnDisable() {
+        private void OnDisable() {
             if (instance == this) {
                 instance = null;
             }
         }
 
-        protected virtual void OnDestroy() {
+        private void OnDestroy() {
             if (instance == this) {
                 instance = null;
             }

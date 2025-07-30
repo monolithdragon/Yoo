@@ -41,7 +41,7 @@ namespace YooTools.ScriptGenerator {
         /// Gets or sets whether opening brace character '{' should begin on a new line.
         /// </summary>
         protected static bool BracesOnNewLine {
-            get { return isBracesOnNewLine; }
+            get => isBracesOnNewLine;
             set {
                 if (value != isBracesOnNewLine) {
                     EditorPrefs.SetBool("ScriptTemplates.Shared.BracesOnNewLine", isBracesOnNewLine = value);
@@ -53,7 +53,7 @@ namespace YooTools.ScriptGenerator {
 		/// When applicable indicates whether script should be for editor usage.
 		/// </summary>
 		protected static bool IsEditorScript {
-            get { return isEditorScript; }
+            get => isEditorScript;
             set {
                 if (value != isEditorScript) {
                     EditorPrefs.SetBool("ScriptTemplates.Shared.EditorScript", isEditorScript = value);
@@ -67,7 +67,7 @@ namespace YooTools.ScriptGenerator {
 		/// Indicates that output class should be marked with <c>InitializeOnLoad</c> attribute.
 		/// </summary>
 		protected static bool OutputInitializeOnLoad {
-            get { return isInitializeOnLoad; }
+            get => isInitializeOnLoad;
             set {
                 if (value != isInitializeOnLoad)
                     EditorPrefs.SetBool("ScriptTemplates.Shared.InitializeOnLoad", isInitializeOnLoad = value);
@@ -78,7 +78,7 @@ namespace YooTools.ScriptGenerator {
 		/// Indicates if static constructor should be added to output class.
 		/// </summary>
 		protected static bool OutputStaticConstructor {
-            get { return isStaticConstructor; }
+            get => isStaticConstructor;
             set {
                 if (value != isStaticConstructor) {
                     EditorPrefs.SetBool("ScriptTemplates.Shared.StaticConstructor", isStaticConstructor = value);
@@ -92,7 +92,7 @@ namespace YooTools.ScriptGenerator {
 		/// Visibility for output type.
 		/// </summary>
 		protected static TypeVisibility ScriptTypeVisibility {
-            get { return typeVisibility; }
+            get => typeVisibility;
             set {
                 if (value != typeVisibility)
                     EditorPrefs.SetInt("ScriptTemplates.Shared.TypeVisibility", (int)(typeVisibility = value));
@@ -103,7 +103,7 @@ namespace YooTools.ScriptGenerator {
 		/// Indicates whether output class should be marked as abstract.
 		/// </summary>
 		protected static bool AbstractClass {
-            get { return isAbstractClass; }
+            get => isAbstractClass;
             set {
                 if (value != isAbstractClass) {
                     EditorPrefs.SetBool("ScriptTemplates.Shared.AbstractClass", isAbstractClass = value);
@@ -119,7 +119,7 @@ namespace YooTools.ScriptGenerator {
 		/// Indicates whether output class should be marked as static.
 		/// </summary>
 		protected static bool StaticClass {
-            get { return isStaticClass; }
+            get => isStaticClass;
             set {
                 if (value != isStaticClass) {
                     EditorPrefs.SetBool("ScriptTemplates.Shared.StaticClass", isStaticClass = value);
@@ -135,7 +135,7 @@ namespace YooTools.ScriptGenerator {
 		/// Indicates whether output class should be marked as partial.
 		/// </summary>
 		protected static bool PartialClass {
-            get { return isPartialClass; }
+            get => isPartialClass;
             set {
                 if (value != isPartialClass) {
                     EditorPrefs.SetBool("ScriptTemplates.Shared.PartialClass", isPartialClass = value);
@@ -150,11 +150,9 @@ namespace YooTools.ScriptGenerator {
         /// <summary>
 		/// Gets characters for opening brace insertion.
 		/// </summary>
-		protected static string OpeningBraceInsertion {
-            get { return BracesOnNewLine ? "\n{" : " {"; }
-        }
+		protected static string OpeningBraceInsertion => BracesOnNewLine ? "\n{" : " {";
 
-        private static void LoadSharedPreferences() {
+		private static void LoadSharedPreferences() {
             isBracesOnNewLine = EditorPrefs.GetBool("ScriptTemplates.Shared.BraceOnNewLine", true);
             isEditorScript = EditorPrefs.GetBool("ScriptTemplates.Shared.EditorScript", false);
             isStaticConstructor = EditorPrefs.GetBool("ScriptTemplates.Shared.StaticConstructor", false);

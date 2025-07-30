@@ -18,10 +18,9 @@ namespace YooTools.VersionControl {
         public string buildDateTime;
         public string inkCompileDateTime;
 
-        public string ToVersion() => string.Format("{0}.{1}.{2}", major, minor, build);
+        public string ToVersion() => $"{major}.{minor}.{build}";
         public override string ToString() =>
-            string.Format("Version {0}.{1}.{2}{3} {4} {5}", major, minor, build,
-                string.IsNullOrWhiteSpace(buildType) ? "" : $" ({buildType})", gitBranch, gitCommitSHA);
+            $"Version {major}.{minor}.{build}{(string.IsNullOrWhiteSpace(buildType) ? "" : $" ({buildType})")} {gitBranch} {gitCommitSHA}";
 
     }
 }

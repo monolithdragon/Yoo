@@ -6,35 +6,35 @@ namespace YooTools.ScriptGenerator.Templates {
     /// </summary>
     [ScriptTemplate("ScriptableObject", 300)]
     public sealed class ScriptableObjectTemplate : ScriptTemplateGenerator {
-        private bool outputAwakeMethod;
-        private bool outputOnEnableMethod;
-        private bool outputOnDisableMethod;
-        private bool outputOnDestroyMethod;
+        private bool _outputAwakeMethod;
+        private bool _outputOnEnableMethod;
+        private bool _outputOnDisableMethod;
+        private bool _outputOnDestroyMethod;
 
-        private string fileName;
-        private int order;
+        private string _fileName;
+        private int _order;
 
         /// <summary>
         /// Initialize new <see cref="ScriptableObjectTemplate"/> instance.
         /// </summary>
         public ScriptableObjectTemplate() {
-            outputAwakeMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Awake", false);
-            outputOnEnableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnEnable", false);
-            outputOnDisableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDisable", false);
-            outputOnDestroyMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDestroy", false);
+            _outputAwakeMethod = EditorPrefs.GetBool("ScriptTemplates.Message.Awake", false);
+            _outputOnEnableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnEnable", false);
+            _outputOnDisableMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDisable", false);
+            _outputOnDestroyMethod = EditorPrefs.GetBool("ScriptTemplates.Message.OnDestroy", false);
 
-            fileName = EditorPrefs.GetString("ScriptTemplates.Shared.FileName", "");
-            order = EditorPrefs.GetInt("ScriptTemplates.Shared.Order", 0);
+            _fileName = EditorPrefs.GetString("ScriptTemplates.Shared.FileName", "");
+            _order = EditorPrefs.GetInt("ScriptTemplates.Shared.Order", 0);
         }
 
         private void UpdateEditorPrefs() {
-            EditorPrefs.SetBool("ScriptTemplates.Message.Awake", outputAwakeMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnEnable", outputOnEnableMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnDisable", outputOnDisableMethod);
-            EditorPrefs.SetBool("ScriptTemplates.Message.OnDestroy", outputOnDestroyMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.Awake", _outputAwakeMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnEnable", _outputOnEnableMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnDisable", _outputOnDisableMethod);
+            EditorPrefs.SetBool("ScriptTemplates.Message.OnDestroy", _outputOnDestroyMethod);
 
-            EditorPrefs.SetString("ScriptTemplates.Shared.FileName", fileName);
-            EditorPrefs.SetInt("ScriptTemplates.Shared.Order", order);
+            EditorPrefs.SetString("ScriptTemplates.Shared.FileName", _fileName);
+            EditorPrefs.SetInt("ScriptTemplates.Shared.Order", _order);
         }
 
         /// <inheritdoc/>
@@ -47,8 +47,8 @@ namespace YooTools.ScriptGenerator.Templates {
             EditorGUILayout.LabelField("Output Options:", EditorStyles.boldLabel);
 
             EditorGUILayout.PrefixLabel("Create Asset Menu (optional)");
-            fileName = EditorGUILayout.TextField("File Name", fileName);
-            order = EditorGUILayout.IntField("Position of the menu item", order);
+            _fileName = EditorGUILayout.TextField("File Name", _fileName);
+            _order = EditorGUILayout.IntField("Position of the menu item", _order);
 
             EditorGUILayout.Space();
 
@@ -62,10 +62,10 @@ namespace YooTools.ScriptGenerator.Templates {
 
             EditorGUILayout.Space();
 
-            outputAwakeMethod = EditorGUILayout.ToggleLeft("Awake Method", outputAwakeMethod);
-            outputOnEnableMethod = EditorGUILayout.ToggleLeft("OnEnable Method", outputOnEnableMethod);
-            outputOnDisableMethod = EditorGUILayout.ToggleLeft("OnDisable Method", outputOnDisableMethod);
-            outputOnDestroyMethod = EditorGUILayout.ToggleLeft("OnDestroy Method", outputOnDestroyMethod);
+            _outputAwakeMethod = EditorGUILayout.ToggleLeft("Awake Method", _outputAwakeMethod);
+            _outputOnEnableMethod = EditorGUILayout.ToggleLeft("OnEnable Method", _outputOnEnableMethod);
+            _outputOnDisableMethod = EditorGUILayout.ToggleLeft("OnDisable Method", _outputOnDisableMethod);
+            _outputOnDestroyMethod = EditorGUILayout.ToggleLeft("OnDestroy Method", _outputOnDestroyMethod);
 
             if (EditorGUI.EndChangeCheck()) {
                 UpdateEditorPrefs();
@@ -87,12 +87,12 @@ namespace YooTools.ScriptGenerator.Templates {
             if (IsEditorScript && OutputInitializeOnLoad)
                 sb.AppendLine("[InitializeOnLoad]");
 
-            if (!string.IsNullOrEmpty(fileName)) {
+            if (!string.IsNullOrEmpty(_fileName)) {
                 string menuName = scriptName;
                 if (!menuName.Contains("/"))
                     menuName = "ScriptableObject/" + menuName;
 
-                sb.AppendLine("[CreateAssetMenu(fileName = " + "\"" + fileName + "\"" + ", " + "menuName = " + "\"" + menuName + "\"" + ", " + "order = " + order + ")]");
+                sb.AppendLine("[CreateAssetMenu(fileName = " + "\"" + _fileName + "\"" + ", " + "menuName = " + "\"" + menuName + "\"" + ", " + "order = " + _order + ")]");
             }
 
             sb.BeginNamespace("public partial class " + scriptName + " : ScriptableObject" + OpeningBraceInsertion);
@@ -101,11 +101,11 @@ namespace YooTools.ScriptGenerator.Templates {
             if (IsEditorScript && OutputInitializeOnLoad || OutputStaticConstructor)
                 sb.AppendLine("static " + scriptName + "()" + OpeningBraceInsertion + "\n}\n");
 
-            if (outputOnEnableMethod)
+            if (_outputOnEnableMethod)
                 sb.AppendLine("private void OnEnable()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnDisableMethod)
+            if (_outputOnDisableMethod)
                 sb.AppendLine("private void OnDisable()" + OpeningBraceInsertion + "\n}\n");
-            if (outputOnDestroyMethod)
+            if (_outputOnDestroyMethod)
                 sb.AppendLine("private void OnDestroy()" + OpeningBraceInsertion + "\n}\n");
 
             sb.EndNamespace("}");

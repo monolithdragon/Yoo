@@ -8,17 +8,17 @@ namespace YooTools.ScriptGenerator.Templates {
     /// </summary>
     [ScriptTemplate("Editor Menu", 200)]
     public sealed class EditorMenuTemplate : ScriptTemplateGenerator {
-        private string menuItem;
+        private string _menuItem;
 
         /// <summary>
         /// Initialize new <see cref="EditorMenuTemplate"/> instance.
         /// </summary>
         public EditorMenuTemplate() {
-            menuItem = EditorPrefs.GetString("ScriptTemplates.Shared.MenuItem", "");
+            _menuItem = EditorPrefs.GetString("ScriptTemplates.Shared.MenuItem", "");
         }
 
         private void UpdateEditorPrefs() {
-            EditorPrefs.SetString("ScriptTemplates.Shared.MenuItem", menuItem);
+            EditorPrefs.SetString("ScriptTemplates.Shared.MenuItem", _menuItem);
         }
 
         /// <inheritdoc/>
@@ -31,7 +31,7 @@ namespace YooTools.ScriptGenerator.Templates {
             EditorGUILayout.LabelField("Output Options:", EditorStyles.boldLabel);
 
             EditorGUILayout.PrefixLabel("Menu Item (optional)");
-            menuItem = EditorGUILayout.TextField(menuItem);
+            _menuItem = EditorGUILayout.TextField(_menuItem);
 
             EditorGUILayout.Space();
 
@@ -39,7 +39,7 @@ namespace YooTools.ScriptGenerator.Templates {
             OutputStaticConstructor = EditorGUILayout.ToggleLeft("Static Constructor", OutputStaticConstructor || OutputInitializeOnLoad);
 
             if (EditorGUI.EndChangeCheck()) {
-                menuItem = menuItem.Trim();
+                _menuItem = _menuItem.Trim();
                 UpdateEditorPrefs();
             }
         }
@@ -65,8 +65,8 @@ namespace YooTools.ScriptGenerator.Templates {
             if (OutputInitializeOnLoad || OutputStaticConstructor)
                 sb.AppendLine("static " + scriptName + "()" + OpeningBraceInsertion + "\n}\n");
 
-            if (!string.IsNullOrEmpty(menuItem)) {
-                string menuName = menuItem;
+            if (!string.IsNullOrEmpty(_menuItem)) {
+                var menuName = _menuItem;
                 if (!menuName.Contains("/"))
                     menuName = Application.productName + Path.DirectorySeparatorChar + menuName;
 

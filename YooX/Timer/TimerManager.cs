@@ -8,35 +8,35 @@ namespace YooX.Timer {
 		/// <summary>
 		/// List of active timers.
 		/// </summary>
-		private static readonly List<Timer> _timers = [];
+		private static readonly List<Timer> Timers = new();
 
 		/// <summary>
 		/// Temporary list used for sweeping and updating timers.
 		/// </summary>
-		private static readonly List<Timer> _sweep = [];
+		private static readonly List<Timer> Sweep = new();
 
 		/// <summary>
 		/// Registers a timer by adding it to the list of active timers.
 		/// </summary>
 		/// <param name="timer">The timer to register.</param>
-		public static void RegisterTimer(Timer timer) => _timers.Add(timer);
+		public static void RegisterTimer(Timer timer) => Timers.Add(timer);
 
 		/// <summary>
 		/// Removes a timer from the list of active timers.
 		/// </summary>
 		/// <param name="timer">The timer to remove.</param>
-		public static void RemoveTimer(Timer timer) => _timers.Remove(timer);
+		public static void RemoveTimer(Timer timer) => Timers.Remove(timer);
 
 		/// <summary>
 		/// Updates all active timers by invoking their Tick method.
 		/// </summary>
 		public static void UpdateTimers() {
-			if (_timers.Count == 0)
+			if (Timers.Count == 0)
 				return;
 
 			// Update the sweep list with active timers.
-			_sweep.RefreshWith(_timers);
-			foreach (var timer in _sweep) {
+			Sweep.RefreshWith(Timers);
+			foreach (var timer in Sweep) {
 				// Call the Tick method for each timer.
 				timer.Tick();
 			}
@@ -47,13 +47,13 @@ namespace YooX.Timer {
 		/// </summary>
 		public static void Clear() {
 			// Copy all timers to the sweep list.
-			_sweep.RefreshWith(_timers);
-			foreach (var timer in _sweep) {
+			Sweep.RefreshWith(Timers);
+			foreach (var timer in Sweep) {
 				timer.Dispose();
 			}
 
-			_timers.Clear();
-			_sweep.Clear();
+			Timers.Clear();
+			Sweep.Clear();
 		}
 	}
 

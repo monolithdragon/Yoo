@@ -8,10 +8,10 @@ using UnityEngine;
 namespace YooTools.HierarchyIconDrawer {
 	[InitializeOnLoad]
 	public static class HierarchyIconDrawer {
-		private static readonly Texture2D requiredIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Icons/RequiredIcon.png");
+		private static readonly Texture2D RequiredIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Icons/RequiredIcon.png");
 		private static bool hasFocusWindow = false;
 		private static EditorWindow hierarchyEditorWindow;
-		private static readonly Dictionary<Type, FieldInfo[]> cacheFielInfos = new();
+		private static readonly Dictionary<Type, FieldInfo[]> CacheFieldInfos = new();
 
 		static HierarchyIconDrawer() {
 			EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowItemOnGUI;
@@ -34,7 +34,7 @@ namespace YooTools.HierarchyIconDrawer {
 				if (fields == null) continue;
 				if (fields.Any(field => IsFieldUnassigned(field.GetValue(component)))) {
 					var iconRect = new Rect(selectionRect.xMax - 20f, selectionRect.y, 16f, 16f);
-					GUI.Label(iconRect, new GUIContent(requiredIcon, "One or more required fields missing or empty!"));
+					GUI.Label(iconRect, new GUIContent(RequiredIcon, "One or more required fields missing or empty!"));
 				}
 
 				var content = EditorGUIUtility.ObjectContent(component, type);
@@ -79,7 +79,7 @@ namespace YooTools.HierarchyIconDrawer {
 		}
 
 		private static FieldInfo[] GetCachedFieldsWithRequiredAttribute(Type componentType) {
-			if (!cacheFielInfos.TryGetValue(componentType, out var fields)) {
+			if (!CacheFieldInfos.TryGetValue(componentType, out var fields)) {
 				fields = componentType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 				var requiredFields = new List<FieldInfo>();
 
@@ -90,7 +90,7 @@ namespace YooTools.HierarchyIconDrawer {
 					if (isRequired && isSerialized) requiredFields.Add(field);
 
 					fields = requiredFields.ToArray();
-					cacheFielInfos[componentType] = fields;
+					CacheFieldInfos[componentType] = fields;
 				}
 			}
 			return fields;
