@@ -4,8 +4,8 @@ namespace YooX {
 	/// <summary>
 	/// Persistent Regulator singleton, will destroy any other older components of the same type it finds on awake
 	/// </summary>
-	public sealed class RegulatorSingleton<T> : MonoBehaviour where T : Component {
-		private static T? instance;
+	public class RegulatorSingleton<T> : MonoBehaviour where T : Component {
+		private static T instance;
 
 		public static bool HasInstance => instance is not null;
 
@@ -30,7 +30,7 @@ namespace YooX {
 		/// <summary>
 		/// Make sure to call base.Awake() in override if you need awake.
 		/// </summary>
-		private void Awake() {
+		protected virtual void Awake() {
 			InitializeSingleton();
 		}
 

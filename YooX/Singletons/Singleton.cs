@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
 namespace YooX {
-	public sealed class Singleton<T> : MonoBehaviour where T : Component {
-		private static T? instance;
+	public class Singleton<T> : MonoBehaviour where T : Component {
+		private static T instance;
 
 		public static bool HasInstance => instance is not null;
-		public static T? TryGetInstance() => HasInstance ? instance : null;
+		public static T TryGetInstance() => HasInstance ? instance : null;
 
 		public static T Instance {
 			get {
@@ -24,7 +24,7 @@ namespace YooX {
 		/// <summary>
 		/// Make sure to call base.Awake() in override if you need awake.
 		/// </summary>
-		private void Awake() {
+		protected virtual void Awake() {
 			InitializeSingleton();
 		}
 

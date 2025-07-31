@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 
 namespace YooX {
-	public sealed class PersistentSingleton<T> : MonoBehaviour where T : Component {
+	public class PersistentSingleton<T> : MonoBehaviour where T : Component {
 		public bool autoUnparentOnAwake = true;
 
-		private static T? instance;
+		private static T instance;
 
 		public static bool HasInstance => instance is not null;
-		public static T? TryGetInstance() => HasInstance ? instance : null;
+		public static T TryGetInstance() => HasInstance ? instance : null;
 
-		public static T? Instance {
+		public static T Instance {
 			get {
 				if (!instance) {
 					instance = FindAnyObjectByType<T>();
@@ -26,7 +26,7 @@ namespace YooX {
 		/// <summary>
 		/// Make sure to call base.Awake() in override if you need awake.
 		/// </summary>
-		private void Awake() {
+		protected virtual void Awake() {
 			InitializeSingleton();
 		}
 
