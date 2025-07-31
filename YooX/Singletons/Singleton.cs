@@ -32,7 +32,7 @@ namespace YooX {
 			if (!Application.isPlaying)
 				return;
 
-			instance = this as T;
+			instance ??= this as T;
 		}
 	}
 

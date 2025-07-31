@@ -2,7 +2,7 @@
 
 namespace YooX {
 	public class PersistentSingleton<T> : MonoBehaviour where T : Component {
-		public bool autoUnparentOnAwake = true;
+		[SerializeField] private bool autoUnparentOnAwake = true;
 
 		private static T instance;
 
