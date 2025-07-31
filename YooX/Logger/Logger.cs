@@ -4,27 +4,26 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
-namespace YooX.Logger {
-	public class Logger : ILogger {
-		private LoggerConfig _config;
+namespace YooX {
+	public class Logger : Singleton<Logger> {
+		[SerializeField] private LoggerConfig config;
+		
 		private StreamWriter _fileStream;
 		private string _logFilePath;
 		private readonly object _fileLock = new();
 
-		public void Initialize(LoggerConfig config) {
-			_config = config;
-
-			if (_config.enableFileLogging) {
+		private void Start() {
+			if (config.enableFileLogging) {
 				OpenLogFile();
 			}
 
 			Application.logMessageReceivedThreaded += HandleUnityLog;
 		}
 
-		public void Info(string message) => Log(LogLevel.Info, message);
-		public void Warning(string message) => Log(LogLevel.Warning, message);
-		public void Error(string message) => Log(LogLevel.Error, message);
-		public void Log(LogLevel level, string message) => LogInternal(level, message);
+		public static void Info(string message) => Log(LogLevel.Info, message);
+		public static void Warning(string message) => Log(LogLevel.Warning, message);
+		public static void Error(string message) => Log(LogLevel.Error, message);
+		public static void Log(LogLevel level, string message) => Instance.LogInternal(level, message);
 
 		public void Dispose() {
 			Application.logMessageReceivedThreaded -= HandleUnityLog;
@@ -61,13 +60,13 @@ namespace YooX.Logger {
 				CloseLogFile();
 
 				// Delete oldest backup
-				var oldestBackup = $"{_logFilePath}.{_config.maxBackupCount}";
+				var oldestBackup = $"{_logFilePath}.{config.maxBackupCount}";
 				if (File.Exists(oldestBackup)) {
 					File.Delete(oldestBackup);
 				}
 
 				// Shift existing backups
-				for (var i = _config.maxBackupCount - 1; i >= 1; i--) {
+				for (var i = config.maxBackupCount - 1; i >= 1; i--) {
 					var currentBackup = $"{_logFilePath}.{i}";
 					var newBackup = $"{_logFilePath}.{i + 1}";
 					if (File.Exists(currentBackup)) {
@@ -83,14 +82,14 @@ namespace YooX.Logger {
 		}
 
 		private void WriteToFile(string message) {
-			if (!_config.enableFileLogging || _fileStream == null) return;
+			if (!config.enableFileLogging || _fileStream == null) return;
 
 			lock (_fileLock) {
 				try {
 					_fileStream.WriteLine(message);
 
 					// Check file size and rotate if needed
-					if (_fileStream.BaseStream.Length > _config.maxLogFileSize) {
+					if (_fileStream.BaseStream.Length > config.maxLogFileSize) {
 						RotateLogFiles();
 					}
 				} catch (Exception e) {
@@ -100,7 +99,7 @@ namespace YooX.Logger {
 		}
 
 		private string FormatMessage(LogLevel level, string message, string color, string sourceFile, int sourceLineNumber, string memberName) =>
-			_config.includeTimestamp ?
+			config.includeTimestamp ?
 				$"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}][{Path.GetFileName(sourceFile.RichColor(color).RichItalic())}:{sourceLineNumber.ToString().RichColor(color).RichItalic()} -  {memberName.RichColor(color).RichItalic()}][{level.ToString().RichColor(color).RichItalic()}] {message.RichColor(color).RichBold()}" :
 				$"[{Path.GetFileName(sourceFile.RichColor(color).RichItalic())}:{sourceLineNumber.ToString().RichColor(color).RichItalic()} -  {memberName.RichColor(color).RichItalic()}][{level.ToString().RichColor(color).RichItalic()}] {message.RichColor(color).RichBold()}";
 
@@ -118,7 +117,7 @@ namespace YooX.Logger {
 		                         [CallerMemberName] string memberName = "",
 		                         [CallerFilePath] string sourceFile = "",
 		                         [CallerLineNumber] int sourceLineNumber = 0) {
-			if (level < _config.minLogLevel) return;
+			if (level < config.minLogLevel) return;
 
 			var color = level switch {
 				LogLevel.Info => "green",
@@ -145,7 +144,7 @@ namespace YooX.Logger {
 			}
 
 			// File output
-			if (_config.enableFileLogging) {
+			if (config.enableFileLogging) {
 				WriteToFile(formatted);
 			}
 		}

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace YooX.Logger {
+namespace YooX {
 	[CreateAssetMenu(fileName = "LoggerConfig", menuName = "YooX/Logger Config", order = 0)]
 	public class LoggerConfig : ScriptableObject {
 		public bool enableFileLogging = false;

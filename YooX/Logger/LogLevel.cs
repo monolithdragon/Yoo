@@ -1,4 +1,4 @@
-namespace YooX.Logger {
+namespace YooX {
 	public enum LogLevel {
 		Info,   // Informational messages
 		Warning,// Recoverable issues
