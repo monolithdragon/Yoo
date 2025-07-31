@@ -45,7 +45,7 @@ namespace YooX.SerializeInterface {
         }
 
         static InterfaceArgs GetArguments(FieldInfo fieldInfo) {
-            Type fieldType = fieldInfo.FieldType;
+            var fieldType = fieldInfo.FieldType;
 
             bool TryGetTypesFromInterfaceReference(Type type, out Type? objType, out Type? intfType) {
                 objType = null;
@@ -68,27 +68,27 @@ namespace YooX.SerializeInterface {
                 return false;
             }
 
-            void GetTypesFromList(Type type, out Type? objType, out Type? intfType) {
+            void GetTypesFromList(Type type, out Type objType, out Type intType) {
                 objType = null;
-                intfType = null;
+                intType = null;
 
                 var listInterface = type.GetInterfaces()
                     .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
 
                 if (listInterface != null) {
                     var elementType = listInterface.GetGenericArguments()[0];
-                    TryGetTypesFromInterfaceReference(elementType, out objType, out intfType);
+                    TryGetTypesFromInterfaceReference(elementType, out objType, out intType);
                 }
             }
 
-            if (!TryGetTypesFromInterfaceReference(fieldType, out Type? objectType, out Type? interfaceType)) {
+            if (!TryGetTypesFromInterfaceReference(fieldType, out Type objectType, out Type interfaceType)) {
                 GetTypesFromList(fieldType, out objectType, out interfaceType);
             }
 
             return new InterfaceArgs(objectType!, interfaceType!);
         }
 
-        static void ValidateAndAssignObject(SerializedProperty property, Object targetObject, string componentNameOrType, string? interfaceName = null) {
+        static void ValidateAndAssignObject(SerializedProperty property, Object targetObject, string componentNameOrType, string interfaceName = null) {
             if (targetObject != null) {
                 property.objectReferenceValue = targetObject;
             } else {
@@ -96,7 +96,7 @@ namespace YooX.SerializeInterface {
                     ? $"GameObject '{componentNameOrType}'"
                     : "assigned object";
 
-                Debug.LogWarning(
+                Logger.Warning(
                     $"The {message} does not have a component that implements '{interfaceName}'."
                 );
                 property.objectReferenceValue = null;

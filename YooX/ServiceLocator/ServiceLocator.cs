@@ -87,9 +87,9 @@ namespace YooX.ServiceLocator {
 
 		public void ConfigureAsGlobal(bool dontDestroyOnLoad) {
 			if (global == this) {
-				Debug.LogWarning("[ServiceLocator.ConfigureAsGlobal] Service already configured as global", this);
+				Logger.Warning("Service already configured as global");
 			} else if (global != null) {
-				Debug.LogError("[ServiceLocator.ConfigureAsGlobal] Another ServiceLocator is already configured as global", this);
+				Logger.Error("Another ServiceLocator is already configured as global");
 			} else {
 				global = this;
 				if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
@@ -100,7 +100,7 @@ namespace YooX.ServiceLocator {
 			var scene = gameObject.scene;
 
 			if (sceneContainers.ContainsKey(scene)) {
-				Debug.LogError("[ServiceLocator.ConfigureForScene] Another ServiceLocator is already configured for this scene", this);
+				Logger.Error("Another ServiceLocator is already configured for this scene");
 				return;
 			}
 

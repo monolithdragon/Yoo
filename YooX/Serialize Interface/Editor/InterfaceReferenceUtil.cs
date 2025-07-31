@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace YooX.SerializeInterface {
     public class InterfaceReferenceUtil {
-        static GUIStyle? labelStyle;
+        static GUIStyle labelStyle;
 
         public static void OnGUI(Rect position, SerializedProperty property, GUIContent label, InterfaceArgs args) {
             InitializeStyleIfNeeded();

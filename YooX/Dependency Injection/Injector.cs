@@ -38,11 +38,11 @@ namespace YooX.DependencyInjection {
 			                            .ToList();
 
 			if (!invalidDependencyList.Any()) {
-				Debug.Log("[Validation]: All dependencies are valid.");
+				Logger.Info("All dependencies are valid.");
 			} else {
-				Debug.LogError($"[Validation]: {invalidDependencyList.Count} dependencies are invalid.");
+				Logger.Error($"{invalidDependencyList.Count} dependencies are invalid.");
 				foreach (var dependency in invalidDependencyList) {
-					Debug.LogError($"[Validation]: {dependency}");
+					Logger.Error($"{dependency}");
 				}
 			}
 		}
@@ -74,7 +74,7 @@ namespace YooX.DependencyInjection {
 				}
 			}
 
-			Debug.Log("[Injector]: All injectable fields cleared.");
+			Logger.Info("All injectable fields cleared.");
 		}
 
 		private static MonoBehaviour[] FindAllMonoBehaviours() => FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.InstanceID);
@@ -88,7 +88,7 @@ namespace YooX.DependencyInjection {
 				var provideInstance = method.Invoke(provider, null);
 				if (provideInstance != null) {
 					_registry.Add(returnType, provideInstance);
-					Debug.Log($"Registered {returnType.Name} from {provideInstance.GetType().Name}");
+					Logger.Info($"Registered {returnType.Name} from {provideInstance.GetType().Name}");
 				} else {
 					throw new Exception($"Provider {provider.GetType().Name} returned null for {returnType.Name}.");
 				}
@@ -111,7 +111,7 @@ namespace YooX.DependencyInjection {
 			var injectableFields = type.GetFields(Binding).Where(member => Attribute.IsDefined(member, typeof(InjectAttribute)));
 			foreach (var injectableField in injectableFields) {
 				if (injectableField.GetValue(instance) != null) {
-					Debug.LogWarning($"[Injector]: Field '{injectableField.Name}' of class '{type.Name}' is already injected.");
+					Logger.Warning($"Field '{injectableField.Name}' of class '{type.Name}' is already injected.");
 					continue;
 				}
 				var fieldType = injectableField.FieldType;
@@ -121,7 +121,7 @@ namespace YooX.DependencyInjection {
 				}
 
 				injectableField.SetValue(instance, resolveInstance);
-				Debug.Log($"Field injected '{fieldType.Name}' into '{type.Name}'");
+				Logger.Info($"Field injected '{fieldType.Name}' into '{type.Name}'");
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace YooX.DependencyInjection {
 				}
 
 				injectableMethod.Invoke(instance, resolvedInstances);
-				Debug.Log($"Method injected {type.Name}.{injectableMethod.Name}");
+				Logger.Info($"Method injected {type.Name}.{injectableMethod.Name}");
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace YooX.DependencyInjection {
 				}
 
 				injectableProperty.SetValue(instance, resolveInstance);
-				Debug.Log($"Property injected {propertyType.Name} into {type.Name}");
+				Logger.Info($"Property injected {propertyType.Name} into {type.Name}");
 			}
 		}
 

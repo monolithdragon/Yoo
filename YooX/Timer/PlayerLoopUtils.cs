@@ -42,11 +42,11 @@ namespace UnityEngine.LowLevel {
 			if (loop.type != typeof(T))
 				return HandleSubSystemLoop<T>(ref loop, systemToInsert, index);
 
-			var playerLoppSystemList = new List<PlayerLoopSystem>();
+			var playerLoopSystemList = new List<PlayerLoopSystem>();
 			if (loop.subSystemList != null)
-				playerLoppSystemList.AddRange(loop.subSystemList);
-			playerLoppSystemList.Insert(index, systemToInsert);
-			loop.subSystemList = playerLoppSystemList.ToArray();
+				playerLoopSystemList.AddRange(loop.subSystemList);
+			playerLoopSystemList.Insert(index, systemToInsert);
+			loop.subSystemList = playerLoopSystemList.ToArray();
 			return true;
 		}
 
@@ -62,7 +62,7 @@ namespace UnityEngine.LowLevel {
 				PrintSubSystem(subsystem, sb, 0);
 			}
 
-			Debug.Log(sb.ToString());
+			YooX.Logger.Info(sb.ToString());
 		}
 
 		/// <summary>

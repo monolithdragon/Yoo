@@ -5,9 +5,9 @@ using Object = UnityEngine.Object;
 namespace YooX.SerializeInterface {
 	[Serializable]
 	public class InterfaceReference<TInterface, TObject> where TObject : Object where TInterface : class {
-		[SerializeField] [HideInInspector] private TObject? underlyingValue;
+		[SerializeField] [HideInInspector] private TObject underlyingValue;
 
-		public TInterface? Value {
+		public TInterface Value {
 			get => underlyingValue switch {
 				null => null,
 				TInterface @interface => @interface,
@@ -20,7 +20,7 @@ namespace YooX.SerializeInterface {
 			};
 		}
 
-		public TObject? UnderlyingValue {
+		public TObject UnderlyingValue {
 			get => underlyingValue;
 			set => underlyingValue = value;
 		}

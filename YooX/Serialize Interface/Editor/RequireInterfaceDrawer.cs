@@ -10,7 +10,7 @@ namespace YooX.SerializeInterface {
         RequireInterfaceAttribute RequireInterfaceAttribute => (RequireInterfaceAttribute)attribute;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-            Type requiredInterfaceType = RequireInterfaceAttribute.InterfaceType;
+            var requiredInterfaceType = RequireInterfaceAttribute.InterfaceType;
             EditorGUI.BeginProperty(position, label, property);
 
             if (property.isArray && property.propertyType == SerializedPropertyType.Generic) {
@@ -28,8 +28,8 @@ namespace YooX.SerializeInterface {
             property.arraySize = EditorGUI.IntField(new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight),
                 label.text + " Size", property.arraySize);
 
-            float yOffset = EditorGUIUtility.singleLineHeight;
-            for (int i = 0; i < property.arraySize; i++) {
+            var yOffset = EditorGUIUtility.singleLineHeight;
+            for (var i = 0; i < property.arraySize; i++) {
                 var element = property.GetArrayElementAtIndex(i);
                 var elementRect = new Rect(position.x, position.y + yOffset, position.width, EditorGUIUtility.singleLineHeight);
                 DrawInterfaceObjectField(elementRect, element, new GUIContent($"Element {i}"), interfaceType);
@@ -39,7 +39,7 @@ namespace YooX.SerializeInterface {
 
         private void DrawInterfaceObjectField(Rect position, SerializedProperty property, GUIContent label, Type interfaceType) {
             var oldReference = property.objectReferenceValue;
-            Type baseType = GetAssignableBaseType(fieldInfo.FieldType, interfaceType);
+            var baseType = GetAssignableBaseType(fieldInfo.FieldType, interfaceType);
             var newReference = EditorGUI.ObjectField(position, label, oldReference, baseType, true);
 
             if (newReference != null && newReference != oldReference) {
@@ -50,7 +50,7 @@ namespace YooX.SerializeInterface {
         }
 
         private Type GetAssignableBaseType(Type fieldType, Type interfaceType) {
-            Type elementType = fieldType.IsArray ? fieldType.GetElementType() :
+            var elementType = fieldType.IsArray ? fieldType.GetElementType() :
                 fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>)
                     ? fieldType.GetGenericArguments()[0]
                     : fieldType;
@@ -78,7 +78,7 @@ namespace YooX.SerializeInterface {
                 return;
             }
 
-            Debug.LogWarning($"The assigned object does not implement '{interfaceType.Name}'.");
+            Logger.Warning($"The assigned object does not implement '{interfaceType.Name}'.");
             property.objectReferenceValue = null;
         }
 

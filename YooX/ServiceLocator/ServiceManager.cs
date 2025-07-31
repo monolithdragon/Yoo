@@ -12,7 +12,7 @@ namespace YooX.ServiceLocator {
 			var type = typeof(TService);
 
 			if (!_services.TryAdd(type, service)) {
-				Debug.LogError($"[ServiceManager.Register]: Service of type {type.FullName} already registered");
+				Logger.Error($"Service of type {type.FullName} already registered");
 			}
 
 			return this;
@@ -24,7 +24,7 @@ namespace YooX.ServiceLocator {
 			}
 
 			if (!_services.TryAdd(type, service)) {
-				Debug.LogError($"[ServiceManager.Register]: Service of type {type.FullName} already registered");
+				Logger.Error($"Service of type {type.FullName} already registered");
 			}
 
 			return this;
