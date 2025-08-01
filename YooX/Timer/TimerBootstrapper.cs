@@ -14,7 +14,7 @@ namespace YooX.Timer {
 		/// <summary>
 		/// PlayerLoopSystem that holds the TimerManager for updating timers.
 		/// </summary>
-		private static PlayerLoopSystem timerSystem;
+		private static PlayerLoopSystem _timerSystem;
 
 		/// <summary>
 		/// Initializes the TimerManager by inserting it into the Unity update loop.
@@ -56,7 +56,7 @@ namespace YooX.Timer {
 		/// <typeparam name="T">The type of the loop where TimerManager is removed from.</typeparam>
 		/// <param name="loop">The PlayerLoopSystem to remove from.</param>
 		private static void RemoveTimerManager<T>(ref PlayerLoopSystem loop) {
-			PlayerLoopUtils.RemoveSystem<T>(ref loop, in timerSystem);
+			PlayerLoopUtils.RemoveSystem<T>(ref loop, in _timerSystem);
 		}
 
 		/// <summary>
@@ -67,13 +67,13 @@ namespace YooX.Timer {
 		/// <param name="index">The index to insert TimerManager at.</param>
 		/// <returns>True if TimerManager is successfully inserted, otherwise false.</returns>
 		private static bool InsertTimerManager<T>(ref PlayerLoopSystem loop, int index) {
-			timerSystem = new PlayerLoopSystem {
+			_timerSystem = new PlayerLoopSystem {
 				type = typeof(TimerManager),
 				updateDelegate = TimerManager.UpdateTimers,
 				subSystemList = null
 			};
 
-			return PlayerLoopUtils.InsertSystem<T>(ref loop, in timerSystem, index);
+			return PlayerLoopUtils.InsertSystem<T>(ref loop, in _timerSystem, index);
 		}
 	}
 
