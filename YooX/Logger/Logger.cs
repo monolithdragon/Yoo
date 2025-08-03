@@ -23,29 +23,35 @@ namespace YooX {
 		}
 
 		public void Info(string message, LogLevel level = LogLevel.Info, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFile = "", [CallerLineNumber] int sourceLineNumber = 0) {
-			string formatted = FormatMessage(level, message, sourceFile, sourceLineNumber, memberName);
-			Debug.Log(formatted);
+			if (Config.isDevelopment) {
+				string formatted = FormatMessage(level, message, sourceFile, sourceLineNumber, memberName);
+				Debug.Log(formatted);
 
-			if (Config.enableFileLogging) {
-				WriteToFile(formatted);
+				if (Config.enableFileLogging) {
+					WriteToFile(formatted);
+				}
 			}
 		}
 
 		public void Warning(string message, LogLevel level = LogLevel.Warning, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFile = "", [CallerLineNumber] int sourceLineNumber = 0) {
-			string formatted = FormatMessage(level, message, sourceFile, sourceLineNumber, memberName);
-			Debug.LogWarning(formatted);
+			if (Config.isDevelopment) {
+				string formatted = FormatMessage(level, message, sourceFile, sourceLineNumber, memberName);
+				Debug.LogWarning(formatted);
 
-			if (Config.enableFileLogging) {
-				WriteToFile(formatted);
+				if (Config.enableFileLogging) {
+					WriteToFile(formatted);
+				}
 			}
 		}
 
 		public void Error(string message, LogLevel level = LogLevel.Error, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFile = "", [CallerLineNumber] int sourceLineNumber = 0) {
-			string formatted = FormatMessage(level, message, sourceFile, sourceLineNumber, memberName);
-			Debug.LogError(formatted);
+			if (Config.isDevelopment) {
+				string formatted = FormatMessage(level, message, sourceFile, sourceLineNumber, memberName);
+				Debug.LogError(formatted);
 
-			if (Config.enableFileLogging) {
-				WriteToFile(formatted);
+				if (Config.enableFileLogging) {
+					WriteToFile(formatted);
+				}
 			}
 		}
 
@@ -132,7 +138,6 @@ namespace YooX {
 				? $"[{DateTime.Now.ToString("yyyy-MM-dd").RichColor(color).RichItalic().RichBold()}][{Path.GetFileName(sourceFile).RichColor(color).RichItalic().RichBold()}:{sourceLineNumber.ToString().RichColor(color).RichItalic()} -  {memberName.RichColor(color).RichItalic().RichBold()}] {message.RichColor(color).RichBold()}"
 				: $"[{Path.GetFileName(sourceFile).RichColor(color).RichItalic()}:{sourceLineNumber.ToString().RichColor(color).RichItalic().RichBold()} -  {memberName.RichColor(color).RichItalic().RichBold()}] {message.RichColor(color).RichBold()}";
 		}
-
 
 		// Handle Unity's native logs
 		private void HandleUnityLog(string logString, string stackTrace, LogType type) {
