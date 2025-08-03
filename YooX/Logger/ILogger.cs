@@ -5,7 +5,7 @@ namespace YooX {
 	public interface ILogger : IDisposable {
 		public LoggerConfig Config { get; set; }
 
-		public void Log(
+		public void Info(
 			string message,
 			LogLevel level = LogLevel.Info,
 			[CallerMemberName] string memberName = "",

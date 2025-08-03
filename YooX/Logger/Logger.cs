@@ -22,7 +22,7 @@ namespace YooX {
 			Application.logMessageReceivedThreaded += HandleUnityLog;
 		}
 
-		public void Log(string message, LogLevel level = LogLevel.Info, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFile = "", [CallerLineNumber] int sourceLineNumber = 0) {
+		public void Info(string message, LogLevel level = LogLevel.Info, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFile = "", [CallerLineNumber] int sourceLineNumber = 0) {
 			string formatted = FormatMessage(level, message, sourceFile, sourceLineNumber, memberName);
 			Debug.Log(formatted);
 
