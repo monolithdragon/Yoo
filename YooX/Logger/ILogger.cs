@@ -1,10 +1,9 @@
 using System;
 using System.Runtime.CompilerServices;
-using UnityEngine;
 
 namespace YooX {
-	public interface ILogger<T> : IDisposable where T : ScriptableObject {
-		public T Config { get; set; }
+	public interface ILogger : IDisposable {
+		public LoggerConfig Config { get; set; }
 
 		public void Log(
 			string message,

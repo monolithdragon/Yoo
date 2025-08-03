@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 
 namespace YooX {
-	public class Logger : ILogger<LoggerConfig> {
+	public class Logger : ILogger {
 		private StreamWriter _fileStream;
 		private string _logFilePath;
 		private readonly object _fileLock = new();
