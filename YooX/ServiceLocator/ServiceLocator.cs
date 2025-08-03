@@ -9,9 +9,9 @@ using UnityEditor;
 
 namespace YooX.ServiceLocator {
 	public class ServiceLocator : MonoBehaviour {
-		private static ServiceLocator global;
-		private static Dictionary<Scene, ServiceLocator> sceneContainers;
-		private static List<GameObject> sceneGameObjects;
+		private static ServiceLocator _global;
+		private static Dictionary<Scene, ServiceLocator> _sceneContainers;
+		private static List<GameObject> _sceneGameObjects;
 
 		private readonly ServiceManager _serviceManager = new();
 
@@ -20,25 +20,25 @@ namespace YooX.ServiceLocator {
 
 		public static ServiceLocator Global {
 			get {
-				if (global != null) return global;
+				if (_global != null) return _global;
 
 				if (FindFirstObjectByType<ServiceLocatorGlobalBootstrapper>() is { } found) {
 					found.BootstrapOnDemand();
-					return global;
+					return _global;
 				}
 
 				var container = new GameObject(GlobalServiceLocatorName, typeof(ServiceLocator));
 				container.AddComponent<ServiceLocatorGlobalBootstrapper>().BootstrapOnDemand();
 
-				return global;
+				return _global;
 			}
 		}
 
 		private void OnDestroy() {
-			if (global == this) {
-				global = null;
-			} else if (sceneContainers.ContainsValue(this)) {
-				sceneContainers.Remove(gameObject.scene);
+			if (_global == this) {
+				_global = null;
+			} else if (_sceneContainers.ContainsValue(this)) {
+				_sceneContainers.Remove(gameObject.scene);
 			}
 		}
 
@@ -47,14 +47,14 @@ namespace YooX.ServiceLocator {
 		public static ServiceLocator ForSceneOf(MonoBehaviour mb) {
 			var scene = mb.gameObject.scene;
 
-			if (sceneContainers.TryGetValue(scene, out var container)) {
+			if (_sceneContainers.TryGetValue(scene, out var container)) {
 				return container;
 			}
 
-			sceneGameObjects.Clear();
-			scene.GetRootGameObjects(sceneGameObjects);
+			_sceneGameObjects.Clear();
+			scene.GetRootGameObjects(_sceneGameObjects);
 
-			foreach (var go in sceneGameObjects.Where(go => go.GetComponent<ServiceLocatorSceneBootstrapper>() != null)) {
+			foreach (var go in _sceneGameObjects.Where(go => go.GetComponent<ServiceLocatorSceneBootstrapper>() != null)) {
 				if (go.TryGetComponent(out ServiceLocatorSceneBootstrapper bootstrapper) && bootstrapper.Container != mb) {
 					bootstrapper.BootstrapOnDemand();
 					return bootstrapper.Container;
@@ -86,31 +86,34 @@ namespace YooX.ServiceLocator {
 		}
 
 		public void ConfigureAsGlobal(bool dontDestroyOnLoad) {
-			if (global == this) {
-				Logger.Warning("Service already configured as global");
-			} else if (global != null) {
-				Logger.Error("Another ServiceLocator is already configured as global");
+			if (_global == this) {
+				Debug.LogWarning("Service already configured as global");
+			} else if (_global != null) {
+				Debug.LogError("Another ServiceLocator is already configured as global");
 			} else {
-				global = this;
-				if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
+				_global = this;
+				if (dontDestroyOnLoad) {
+					transform.SetParent(null);
+					DontDestroyOnLoad(gameObject);
+				}
 			}
 		}
 
 		public void ConfigureForScene() {
 			var scene = gameObject.scene;
 
-			if (sceneContainers.ContainsKey(scene)) {
-				Logger.Error("Another ServiceLocator is already configured for this scene");
+			if (_sceneContainers.ContainsKey(scene)) {
+				Debug.LogError("Another ServiceLocator is already configured for this scene");
 				return;
 			}
 
-			sceneContainers.Add(scene, this);
+			_sceneContainers.Add(scene, this);
 		}
 
 		private bool TryGetService<T>(out T service) where T : class => _serviceManager.TryGet<T>(out service);
 
 		private bool TryGetNextInHierarchy(out ServiceLocator container) {
-			if (this == global) {
+			if (this == _global) {
 				container = null;
 				return false;
 			}
@@ -121,21 +124,21 @@ namespace YooX.ServiceLocator {
 
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 		private static void ResetStatics() {
-			global = null;
-			sceneContainers = new Dictionary<Scene, ServiceLocator>();
-			sceneGameObjects = new List<GameObject>();
+			_global = null;
+			_sceneContainers = new Dictionary<Scene, ServiceLocator>();
+			_sceneGameObjects = new List<GameObject>();
 		}
 
 #if UNITY_EDITOR
-		[MenuItem("GameObject/ServiceLocator/Add Global")]
-		private static void AddGlobal() {
-			var go = new GameObject(GlobalServiceLocatorName, typeof(ServiceLocatorGlobalBootstrapper));
-		}
-		
-		[MenuItem("GameObject/ServiceLocator/Add Scene")]
-		private static void AddScene() {
-			var go = new GameObject(SceneServiceLocatorName, typeof(ServiceLocatorSceneBootstrapper));
-		}
+        [MenuItem("GameObject/ServiceLocator/Add Global")]
+        static void AddGlobal() {
+            var go = new GameObject(GlobalServiceLocatorName, typeof(ServiceLocatorGlobalBootstrapper));
+        }
+
+        [MenuItem("GameObject/ServiceLocator/Add Scene")]
+        static void AddScene() {
+            var go = new GameObject(SceneServiceLocatorName, typeof(ServiceLocatorSceneBootstrapper));
+        }
 #endif
 	}
 }

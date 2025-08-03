@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace YooTools.HierarchyIconDrawer {
+namespace YooTools.HierarchyDrawer {
 	[AttributeUsage(AttributeTargets.Field)]
 	public class RequiredAttribute : PropertyAttribute { }
 }

@@ -59,7 +59,7 @@ namespace YooX.EventBus {
 			foreach (var eventType in EventTypes!) {
 				var busType = typeDef.MakeGenericType(eventType);
 				eventBuses.Add(busType);
-				Logger.Info($"Initialized EventBus<{eventType.Name}>");
+				Debug.Log($"Initialized EventBus<{eventType.Name}>");
 			}
 
 			return eventBuses;
@@ -69,7 +69,7 @@ namespace YooX.EventBus {
 		/// Clears (removes all listeners from) all event buses in the application.
 		/// </summary>
 		public static void ClearAllBuses() {
-			Logger.Info("Clearing All EventBuses...");
+			Debug.Log("Clearing All EventBuses...");
 			foreach (var busType in EventBusTypes!) {
 				var clearMethod = busType.GetMethod("Clear", BindingFlags.NonPublic | BindingFlags.Static);
 				clearMethod?.Invoke(null, null);

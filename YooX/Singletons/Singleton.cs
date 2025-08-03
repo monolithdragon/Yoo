@@ -2,22 +2,22 @@
 
 namespace YooX {
 	public class Singleton<T> : MonoBehaviour where T : Component {
-		private static T instance;
+		private static T _instance;
 
-		public static bool HasInstance => instance is not null;
-		public static T TryGetInstance() => HasInstance ? instance : null;
+		public static bool HasInstance => _instance is not null;
+		public static T TryGetInstance() => HasInstance ? _instance : null;
 
 		public static T Instance {
 			get {
-				if (!instance) {
-					instance = FindAnyObjectByType<T>();
-					if (!instance) {
+				if (!_instance) {
+					_instance = FindAnyObjectByType<T>();
+					if (!_instance) {
 						var go = new GameObject($"{typeof(T).Name} Auto-Generated");
-						instance = go.AddComponent<T>();
+						_instance = go.AddComponent<T>();
 					}
 				}
 
-				return instance;
+				return _instance;
 			}
 		}
 
@@ -29,10 +29,9 @@ namespace YooX {
 		}
 
 		private void InitializeSingleton() {
-			if (!Application.isPlaying)
-				return;
+			if (!Application.isPlaying) return;
 
-			instance ??= this as T;
+			_instance ??= this as T;
 		}
 	}
 

@@ -3,6 +3,6 @@ namespace YooX {
 		Info,   // Informational messages
 		Warning,// Recoverable issues
 		Error,  // Critical errors
-		Off     // Disable logging
+		Off     // Log off
 	}
 }

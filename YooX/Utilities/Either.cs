@@ -2,8 +2,8 @@ using System;
 
 namespace YooX {
 	public struct Either<TLeft, TRight> {
-		private TLeft _left;
-		private TRight _right;
+		private readonly TLeft _left;
+		private readonly TRight _right;
 		private readonly bool _isRight;
 
 		public bool IsLeft => !_isRight;
@@ -31,17 +31,11 @@ namespace YooX {
 		public static Either<TLeft, TRight> FromLeft(TLeft left) => new(left, default, false);
 		public static Either<TLeft, TRight> FromRight(TRight right) => new(default, right, true);
 
-		public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc) {
-			return IsRight ? rightFunc(_right) : leftFunc(_left);
-		}
+		public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc) => IsRight ? rightFunc(_right) : leftFunc(_left);
 
-		public Either<TLeft, TResult> SelectMany<TResult>(Func<TRight, Either<TLeft, TResult>> bind) {
-			return IsRight ? bind(_right) : Either<TLeft, TResult>.FromLeft(_left);
-		}
+		public Either<TLeft, TResult> SelectMany<TResult>(Func<TRight, Either<TLeft, TResult>> bind) => IsRight ? bind(_right) : Either<TLeft, TResult>.FromLeft(_left);
 
-		public Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> map) {
-			return IsRight ? Either<TLeft, TResult>.FromRight(map(_right)) : Either<TLeft, TResult>.FromLeft(_left);
-		}
+		public Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> map) => IsRight ? Either<TLeft, TResult>.FromRight(map(_right)) : Either<TLeft, TResult>.FromLeft(_left);
 
 		public static implicit operator Either<TLeft, TRight>(TLeft left) => FromLeft(left);
 		public static implicit operator Either<TLeft, TRight>(TRight right) => FromRight(right);

@@ -1,10 +1,10 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace YooTools.HierarchyIconDrawer {
+namespace YooTools.HierarchyDrawer {
 	[CustomPropertyDrawer(typeof(RequiredAttribute))]
 	public class RequiredDrawer : PropertyDrawer {
-		private readonly Texture2D _requiredIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Resources/Icons/RequiredField.png");
+		private readonly Texture2D _requiredIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.unity.2d.animation/Editor/Assets/EditorIcons/Dark/d_Warning@2x.png");
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 			EditorGUI.BeginProperty(position, label, property);
@@ -35,7 +35,9 @@ namespace YooTools.HierarchyIconDrawer {
 			switch(property.propertyType) {
 				case SerializedPropertyType.ObjectReference when property.objectReferenceValue:
 				case SerializedPropertyType.ExposedReference when property.exposedReferenceValue:
-				case SerializedPropertyType.AnimationCurve when property.animationCurveValue is { length: > 0 }:
+				case SerializedPropertyType.AnimationCurve when property.animationCurveValue is {
+					length: > 0
+				}:
 				case SerializedPropertyType.String when !string.IsNullOrEmpty(property.stringValue):
 					return false;
 				default:

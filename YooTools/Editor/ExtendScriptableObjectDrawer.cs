@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace YooTools.EditorExtensions {
+namespace YooTools {
 	/// <summary>
 	/// Extends how ScriptableObject object references are displayed in the inspector
 	/// Shows you all values under the object reference
@@ -13,27 +13,25 @@ namespace YooTools.EditorExtensions {
 	[CustomPropertyDrawer(typeof(ScriptableObject), true)]
 	public class ExtendScriptableObjectDrawer : PropertyDrawer {
 		private const int BottomWidth = 66;
-		private static Rect propertyRect = Rect.zero;
+		private static Rect _propertyRect = Rect.zero;
 		private static readonly List<string> IgnoreClassFullNames = new() { "TMPro.TMP_FontAsset" };
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-			var totalHeight = EditorGUIUtility.singleLineHeight;
+			float totalHeight = EditorGUIUtility.singleLineHeight;
 			if (property.objectReferenceValue == null || property.objectReferenceValue is not ScriptableObject data || !AreAnySubPropertiesVisible(property)) {
 				return totalHeight;
 			}
 
 			if (property.isExpanded) {
-				if (data == null)
-					return EditorGUIUtility.singleLineHeight;
+				if (data == null) return EditorGUIUtility.singleLineHeight;
 
 				var serializedObject = new SerializedObject(data);
 				var prop = serializedObject.GetIterator();
 				if (prop.NextVisible(true)) {
 					do {
-						if (prop.name == "m_Script")
-							continue;
+						if (prop.name == "m_Script") continue;
 						var subProp = serializedObject.FindProperty(prop.name);
-						var height = EditorGUI.GetPropertyHeight(subProp, null, true) + EditorGUIUtility.standardVerticalSpacing;
+						float height = EditorGUI.GetPropertyHeight(subProp, null, true) + EditorGUIUtility.standardVerticalSpacing;
 						totalHeight += height;
 					} while(prop.NextVisible(false));
 				}
@@ -73,16 +71,15 @@ namespace YooTools.EditorExtensions {
 				EditorGUI.Foldout(foldoutRect, property.isExpanded, guiContent, true, EditorStyles.label);
 			}
 			var indentedPosition = EditorGUI.IndentedRect(position);
-			var indentOffset = indentedPosition.x - position.x;
-			propertyRect = new Rect(position.x + (EditorGUIUtility.labelWidth - indentOffset), position.y, position.width - (EditorGUIUtility.labelWidth - indentOffset), EditorGUIUtility.singleLineHeight);
+			float indentOffset = indentedPosition.x - position.x;
+			_propertyRect = new Rect(position.x + (EditorGUIUtility.labelWidth - indentOffset), position.y, position.width - (EditorGUIUtility.labelWidth - indentOffset), EditorGUIUtility.singleLineHeight);
 
 			if (propertyData != null || property.objectReferenceValue == null) {
-				propertyRect.width -= BottomWidth;
+				_propertyRect.width -= BottomWidth;
 			}
 
-			EditorGUI.ObjectField(propertyRect, property, type, GUIContent.none);
-			if (GUI.changed)
-				property.serializedObject.ApplyModifiedProperties();
+			EditorGUI.ObjectField(_propertyRect, property, type, GUIContent.none);
+			if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
 
 			var buttonRect = new Rect(position.x + position.width - BottomWidth, position.y, BottomWidth, EditorGUIUtility.singleLineHeight);
 
@@ -98,19 +95,17 @@ namespace YooTools.EditorExtensions {
 
 					// Iterate over all the values and draw them
 					var prop = serializedObject.GetIterator();
-					var y = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+					float y = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 					if (prop.NextVisible(true)) {
 						do {
 							// Don't bother drawing the class file
-							if (prop.name == "m_Script")
-								continue;
-							var height = EditorGUI.GetPropertyHeight(prop, new GUIContent(prop.displayName), true);
+							if (prop.name == "m_Script") continue;
+							float height = EditorGUI.GetPropertyHeight(prop, new GUIContent(prop.displayName), true);
 							EditorGUI.PropertyField(new Rect(position.x, y, position.width - BottomWidth, height), prop, true);
 							y += height + EditorGUIUtility.standardVerticalSpacing;
 						} while(prop.NextVisible(false));
 					}
-					if (GUI.changed)
-						serializedObject.ApplyModifiedProperties();
+					if (GUI.changed) serializedObject.ApplyModifiedProperties();
 					serializedObject.Dispose();
 					EditorGUI.indentLevel--;
 				}
@@ -139,8 +134,8 @@ namespace YooTools.EditorExtensions {
 				isExpanded = EditorGUI.Foldout(foldoutRect, isExpanded, label, true);
 
 				var indentedPosition = EditorGUI.IndentedRect(position);
-				var indentOffset = indentedPosition.x - position.x;
-				propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset, EditorGUIUtility.singleLineHeight);
+				float indentOffset = indentedPosition.x - position.x;
+				_propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset, EditorGUIUtility.singleLineHeight);
 			} else {
 				// So yeah, having a foldout look like a label is a weird hack, 
 				// but both code paths seem to need to be a foldout or 
@@ -150,8 +145,8 @@ namespace YooTools.EditorExtensions {
 				EditorGUI.Foldout(foldoutRect, isExpanded, label, true, EditorStyles.label);
 
 				var indentedPosition = EditorGUI.IndentedRect(position);
-				var indentOffset = indentedPosition.x - position.x;
-				propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset - 60, EditorGUIUtility.singleLineHeight);
+				float indentOffset = indentedPosition.x - position.x;
+				_propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset - 60, EditorGUIUtility.singleLineHeight);
 			}
 
 			EditorGUILayout.BeginHorizontal();
@@ -188,13 +183,11 @@ namespace YooTools.EditorExtensions {
 			if (prop.NextVisible(true)) {
 				do {
 					// Don't bother drawing the class file
-					if (prop.name == "m_Script")
-						continue;
+					if (prop.name == "m_Script") continue;
 					EditorGUILayout.PropertyField(prop, true);
 				} while(prop.NextVisible(false));
 			}
-			if (GUI.changed)
-				serializedObject.ApplyModifiedProperties();
+			if (GUI.changed) serializedObject.ApplyModifiedProperties();
 			serializedObject.Dispose();
 			EditorGUILayout.EndVertical();
 			EditorGUI.indentLevel--;
@@ -208,8 +201,8 @@ namespace YooTools.EditorExtensions {
 				isExpanded = EditorGUI.Foldout(foldoutRect, isExpanded, label, true);
 
 				var indentedPosition = EditorGUI.IndentedRect(position);
-				var indentOffset = indentedPosition.x - position.x;
-				propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset, EditorGUIUtility.singleLineHeight);
+				float indentOffset = indentedPosition.x - position.x;
+				_propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset, EditorGUIUtility.singleLineHeight);
 			} else {
 				// So yeah having a foldout look like a label is a weird hack 
 				// but both code paths seem to need to be a foldout or 
@@ -219,8 +212,8 @@ namespace YooTools.EditorExtensions {
 				EditorGUI.Foldout(foldoutRect, isExpanded, label, true, EditorStyles.label);
 
 				var indentedPosition = EditorGUI.IndentedRect(position);
-				var indentOffset = indentedPosition.x - position.x;
-				propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset - 60, EditorGUIUtility.singleLineHeight);
+				float indentOffset = indentedPosition.x - position.x;
+				_propertyRect = new Rect(position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset - 60, EditorGUIUtility.singleLineHeight);
 			}
 
 			EditorGUILayout.BeginHorizontal();
@@ -246,8 +239,7 @@ namespace YooTools.EditorExtensions {
 		// Creates a new ScriptableObject via the default Save File panel
 		private static ScriptableObject CreateAssetWithSavePrompt(Type type, string path) {
 			path = EditorUtility.SaveFilePanelInProject("Save ScriptableObject", type.Name + ".asset", "asset", "Enter a file name for the ScriptableObject.", path);
-			if (path == "")
-				return null;
+			if (path == "") return null;
 			var asset = ScriptableObject.CreateInstance(type);
 			AssetDatabase.CreateAsset(asset, path);
 			AssetDatabase.SaveAssets();
@@ -258,25 +250,21 @@ namespace YooTools.EditorExtensions {
 		}
 
 		private Type GetFieldType() {
-			if (fieldInfo == null)
-				return null;
+			if (fieldInfo == null) return null;
 			var type = fieldInfo.FieldType;
 			if (type.IsArray)
 				type = type.GetElementType();
-			else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-				type = type.GetGenericArguments()[0];
+			else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) type = type.GetGenericArguments()[0];
 			return type;
 		}
 
 		private static bool AreAnySubPropertiesVisible(SerializedProperty property) {
 			var data = property.objectReferenceValue as ScriptableObject;
-			if (data == null)
-				return false;
+			if (data == null) return false;
 			var serializedObject = new SerializedObject(data);
 			var prop = serializedObject.GetIterator();
 			while(prop.NextVisible(true)) {
-				if (prop.name == "m_Script")
-					continue;
+				if (prop.name == "m_Script") continue;
 				return true;//if there's any visible property other than m_script
 			}
 			serializedObject.Dispose();

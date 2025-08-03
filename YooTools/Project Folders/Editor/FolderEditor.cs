@@ -94,21 +94,25 @@ namespace YooTools.ProjectFolders {
 
 				AssetDatabase.CreateFolder(rootFolder.ParentFolder, rootFolder.Name);
 
-				File.Create(Directory.GetCurrentDirectory()
-				            + Path.DirectorySeparatorChar
-				            + rootFolder.CurrentFolder
-				            + Path.DirectorySeparatorChar
-				            + ".keep");
+				File.Create(
+					Directory.GetCurrentDirectory()
+					+ Path.DirectorySeparatorChar
+					+ rootFolder.CurrentFolder
+					+ Path.DirectorySeparatorChar
+					+ ".keep"
+				);
 
 				Debug.Log($"Creating '.keep' file in: <b>{rootFolder.CurrentFolder}</b>");
 			} else {
 				if (Directory.GetFiles(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + rootFolder.CurrentFolder).Length < 1) {
 
-					File.Create(Directory.GetCurrentDirectory()
-					            + Path.DirectorySeparatorChar
-					            + rootFolder.CurrentFolder
-					            + Path.DirectorySeparatorChar
-					            + ".keep");
+					File.Create(
+						Directory.GetCurrentDirectory()
+						+ Path.DirectorySeparatorChar
+						+ rootFolder.CurrentFolder
+						+ Path.DirectorySeparatorChar
+						+ ".keep"
+					);
 
 
 				} else {

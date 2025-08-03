@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace YooX.EventBus {
 	public class EventBus<T> where T : IEvent {
@@ -15,7 +16,7 @@ namespace YooX.EventBus {
 		}
 
 		private static void Clear() {
-			Logger.Info($"Clearing {typeof(T).Name} bindings");
+			Debug.Log($"Clearing {typeof(T).Name} bindings");
 			Bindings.Clear();
 		}
 	}

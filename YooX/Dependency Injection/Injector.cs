@@ -38,11 +38,11 @@ namespace YooX.DependencyInjection {
 			                            .ToList();
 
 			if (!invalidDependencyList.Any()) {
-				Logger.Info("All dependencies are valid.");
+				Debug.Log("All dependencies are valid.");
 			} else {
-				Logger.Error($"{invalidDependencyList.Count} dependencies are invalid.");
-				foreach (var dependency in invalidDependencyList) {
-					Logger.Error($"{dependency}");
+				Debug.LogError($"{invalidDependencyList.Count} dependencies are invalid.");
+				foreach (string dependency in invalidDependencyList) {
+					Debug.LogError($"{dependency}");
 				}
 			}
 		}
@@ -74,7 +74,7 @@ namespace YooX.DependencyInjection {
 				}
 			}
 
-			Logger.Info("All injectable fields cleared.");
+			Debug.Log("All injectable fields cleared.");
 		}
 
 		private static MonoBehaviour[] FindAllMonoBehaviours() => FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.InstanceID);
@@ -85,10 +85,10 @@ namespace YooX.DependencyInjection {
 				if (!Attribute.IsDefined(method, typeof(ProvideAttribute))) continue;
 
 				var returnType = method.ReturnType;
-				var provideInstance = method.Invoke(provider, null);
+				object provideInstance = method.Invoke(provider, null);
 				if (provideInstance != null) {
 					_registry.Add(returnType, provideInstance);
-					Logger.Info($"Registered {returnType.Name} from {provideInstance.GetType().Name}");
+					Debug.Log($"Registered {returnType.Name} from {provideInstance.GetType().Name}");
 				} else {
 					throw new Exception($"Provider {provider.GetType().Name} returned null for {returnType.Name}.");
 				}
@@ -111,17 +111,17 @@ namespace YooX.DependencyInjection {
 			var injectableFields = type.GetFields(Binding).Where(member => Attribute.IsDefined(member, typeof(InjectAttribute)));
 			foreach (var injectableField in injectableFields) {
 				if (injectableField.GetValue(instance) != null) {
-					Logger.Warning($"Field '{injectableField.Name}' of class '{type.Name}' is already injected.");
+					Debug.LogWarning($"Field '{injectableField.Name}' of class '{type.Name}' is already injected.");
 					continue;
 				}
 				var fieldType = injectableField.FieldType;
-				var resolveInstance = Resolve(fieldType);
+				object resolveInstance = Resolve(fieldType);
 				if (resolveInstance == null) {
 					throw new Exception($"Failed to resolve '{fieldType.Name}' for '{type.Name}'");
 				}
 
 				injectableField.SetValue(instance, resolveInstance);
-				Logger.Info($"Field injected '{fieldType.Name}' into '{type.Name}'");
+				Debug.Log($"Field injected '{fieldType.Name}' into '{type.Name}'");
 			}
 		}
 
@@ -132,13 +132,13 @@ namespace YooX.DependencyInjection {
 				var requiredParameters = injectableMethod.GetParameters()
 				                                         .Select(parameter => parameter.ParameterType)
 				                                         .ToArray();
-				var resolvedInstances = requiredParameters.Select(Resolve).ToArray();
+				object[] resolvedInstances = requiredParameters.Select(Resolve).ToArray();
 				if (resolvedInstances.Any(resolvedInstance => resolvedInstance == null)) {
 					throw new Exception($"Failed to inject {type.Name}.{injectableMethod.Name}");
 				}
 
 				injectableMethod.Invoke(instance, resolvedInstances);
-				Logger.Info($"Method injected {type.Name}.{injectableMethod.Name}");
+				Debug.Log($"Method injected {type.Name}.{injectableMethod.Name}");
 			}
 		}
 
@@ -147,18 +147,18 @@ namespace YooX.DependencyInjection {
 			var injectableProperties = type.GetProperties(Binding).Where(member => Attribute.IsDefined(member, typeof(InjectAttribute)));
 			foreach (var injectableProperty in injectableProperties) {
 				var propertyType = injectableProperty.PropertyType;
-				var resolveInstance = Resolve(propertyType);
+				object resolveInstance = Resolve(propertyType);
 				if (resolveInstance == null) {
 					throw new Exception($"Failed to resolve {propertyType.Name} for {type.Name}");
 				}
 
 				injectableProperty.SetValue(instance, resolveInstance);
-				Logger.Info($"Property injected {propertyType.Name} into {type.Name}");
+				Debug.Log($"Property injected {propertyType.Name} into {type.Name}");
 			}
 		}
 
 		private object Resolve(Type type) {
-			_registry.TryGetValue(type, out var instance);
+			_registry.TryGetValue(type, out object instance);
 			return instance;
 		}
 	}

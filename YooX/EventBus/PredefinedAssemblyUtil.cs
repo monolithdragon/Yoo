@@ -29,7 +29,7 @@ namespace YooX.EventBus {
 				"Assembly-CSharp-Editor" => AssemblyType.AssemblyCSharpEditor,
 				"Assembly-CSharp-Editor-firstpass" => AssemblyType.AssemblyCSharpEditorFirstPass,
 				"Assembly-CSharp-firstpass" => AssemblyType.AssemblyCSharpFirstPass,
-				_ => null
+				var _ => null
 			};
 		}
 
@@ -65,7 +65,7 @@ namespace YooX.EventBus {
 		/// <param name="assemblyTypes">Array of Type objects representing all the types in the assembly.</param>
 		/// <param name="interfaceType">Type representing the interface to be checked against.</param>
 		/// <param name="results">Collection of types where result should be added.</param>
-		private static void AddTypesFromAssembly(Type[]? assemblyTypes, ICollection<Type> results, Type interfaceType) {
+		private static void AddTypesFromAssembly(Type[] assemblyTypes, ICollection<Type> results, Type interfaceType) {
 			if (assemblyTypes == null) return;
 
 			foreach (var type in assemblyTypes) {

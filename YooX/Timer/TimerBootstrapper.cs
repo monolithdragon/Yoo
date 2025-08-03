@@ -67,11 +67,7 @@ namespace YooX.Timer {
 		/// <param name="index">The index to insert TimerManager at.</param>
 		/// <returns>True if TimerManager is successfully inserted, otherwise false.</returns>
 		private static bool InsertTimerManager<T>(ref PlayerLoopSystem loop, int index) {
-			_timerSystem = new PlayerLoopSystem {
-				type = typeof(TimerManager),
-				updateDelegate = TimerManager.UpdateTimers,
-				subSystemList = null
-			};
+			_timerSystem = new PlayerLoopSystem { type = typeof(TimerManager), updateDelegate = TimerManager.UpdateTimers, subSystemList = null };
 
 			return PlayerLoopUtils.InsertSystem<T>(ref loop, in _timerSystem, index);
 		}

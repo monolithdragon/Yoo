@@ -15,4 +15,8 @@
         </Reference>
     </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command='xcopy "$(TargetDir)$(TargetName).dll" "C:\Users\lujzi\Documents\Unity Projects\Jungle Shamans\Assets\Jungle Shamans\Plugins" /y'/>
+    </Target>
+
 </Project>
