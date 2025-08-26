@@ -1,8 +1,7 @@
 using UnityEngine;
 
 namespace YooX.ServiceLocator {
-	[DisallowMultipleComponent]
-	[RequireComponent(typeof(ServiceLocator))]
+	[DisallowMultipleComponent, RequireComponent(typeof(ServiceLocator))]
 	public abstract class Bootstrapper : MonoBehaviour {
 		private ServiceLocator _container;
 		private bool _hasBeenBootstrapped;
@@ -12,11 +11,14 @@ namespace YooX.ServiceLocator {
 		private void Awake() => BootstrapOnDemand();
 
 		public void BootstrapOnDemand() {
-			if (_hasBeenBootstrapped) return;
+			if (_hasBeenBootstrapped) {
+				return;
+			}
+
 			_hasBeenBootstrapped = true;
 			Bootstrap();
 		}
 
-		protected abstract void Bootstrap();
+		abstract protected void Bootstrap();
 	}
 }

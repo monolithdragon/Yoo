@@ -15,12 +15,14 @@ namespace YooX.DependencyInjection {
 
 			// Find all modules implementing IDependencyProvider
 			var providers = FindAllMonoBehaviours().OfType<IDependencyProvider>();
+
 			foreach (var provider in providers) {
 				RegisterProvider(provider);
 			}
 
 			// Find all injectable objects and inject their dependencies
 			var injectables = FindAllMonoBehaviours().Where(IsInjectable);
+
 			foreach (var injectable in injectables) {
 				Inject(injectable);
 			}
@@ -30,17 +32,24 @@ namespace YooX.DependencyInjection {
 			var monoBehaviours = FindAllMonoBehaviours();
 			var providers = monoBehaviours.OfType<IDependencyProvider>();
 			var providerDependencies = GetProviderDependencies(providers);
+
 			var invalidDependencyList = monoBehaviours
-			                            .SelectMany(mb => mb.GetType().GetFields(Binding), (mb, field) => new { mb, field })
-			                            .Where(t => Attribute.IsDefined(t.field, typeof(InjectAttribute)))
-			                            .Where(t => !providerDependencies.Contains(t.field.FieldType) && t.field.GetValue(t.mb) == null)
-			                            .Select(t => $"[Validation]: {t.mb.GetType().Name} is missing dependency {t.field.FieldType.Name} on GameObject {t.mb.gameObject.name}.")
-			                            .ToList();
+										.SelectMany(
+											mb => mb.GetType().GetFields(Binding),
+											(mb, field) => new {
+												mb, field
+											}
+										)
+										.Where(t => Attribute.IsDefined(t.field, typeof(InjectAttribute)))
+										.Where(t => !providerDependencies.Contains(t.field.FieldType) && t.field.GetValue(t.mb) == null)
+										.Select(t => $"[Validation]: {t.mb.GetType().Name} is missing dependency {t.field.FieldType.Name} on GameObject {t.mb.gameObject.name}.")
+										.ToList();
 
 			if (!invalidDependencyList.Any()) {
 				Debug.Log("All dependencies are valid.");
 			} else {
 				Debug.LogError($"{invalidDependencyList.Count} dependencies are invalid.");
+
 				foreach (string dependency in invalidDependencyList) {
 					Debug.LogError($"{dependency}");
 				}
@@ -54,7 +63,9 @@ namespace YooX.DependencyInjection {
 				var methods = provider.GetType().GetMethods(Binding);
 
 				foreach (var method in methods) {
-					if (!Attribute.IsDefined(method, typeof(ProvideAttribute))) continue;
+					if (!Attribute.IsDefined(method, typeof(ProvideAttribute))) {
+						continue;
+					}
 
 					var returnType = method.ReturnType;
 					result.Add(returnType);
@@ -81,11 +92,15 @@ namespace YooX.DependencyInjection {
 
 		private void RegisterProvider(IDependencyProvider provider) {
 			var methods = provider.GetType().GetMethods(Binding);
+
 			foreach (var method in methods) {
-				if (!Attribute.IsDefined(method, typeof(ProvideAttribute))) continue;
+				if (!Attribute.IsDefined(method, typeof(ProvideAttribute))) {
+					continue;
+				}
 
 				var returnType = method.ReturnType;
 				object provideInstance = method.Invoke(provider, null);
+
 				if (provideInstance != null) {
 					_registry.Add(returnType, provideInstance);
 					Debug.Log($"Registered {returnType.Name} from {provideInstance.GetType().Name}");
@@ -97,6 +112,7 @@ namespace YooX.DependencyInjection {
 
 		private static bool IsInjectable(MonoBehaviour instance) {
 			var members = instance.GetType().GetMethods(Binding);
+
 			return members.Any(member => Attribute.IsDefined(member, typeof(InjectAttribute)));
 		}
 
@@ -109,13 +125,17 @@ namespace YooX.DependencyInjection {
 		private void InjectField(object instance) {
 			var type = instance.GetType();
 			var injectableFields = type.GetFields(Binding).Where(member => Attribute.IsDefined(member, typeof(InjectAttribute)));
+
 			foreach (var injectableField in injectableFields) {
 				if (injectableField.GetValue(instance) != null) {
 					Debug.LogWarning($"Field '{injectableField.Name}' of class '{type.Name}' is already injected.");
+
 					continue;
 				}
+
 				var fieldType = injectableField.FieldType;
 				object resolveInstance = Resolve(fieldType);
+
 				if (resolveInstance == null) {
 					throw new Exception($"Failed to resolve '{fieldType.Name}' for '{type.Name}'");
 				}
@@ -128,11 +148,14 @@ namespace YooX.DependencyInjection {
 		private void InjectMethod(object instance) {
 			var type = instance.GetType();
 			var injectableMethods = type.GetMethods(Binding).Where(member => Attribute.IsDefined(member, typeof(InjectAttribute)));
+
 			foreach (var injectableMethod in injectableMethods) {
 				var requiredParameters = injectableMethod.GetParameters()
-				                                         .Select(parameter => parameter.ParameterType)
-				                                         .ToArray();
+														 .Select(parameter => parameter.ParameterType)
+														 .ToArray();
+
 				object[] resolvedInstances = requiredParameters.Select(Resolve).ToArray();
+
 				if (resolvedInstances.Any(resolvedInstance => resolvedInstance == null)) {
 					throw new Exception($"Failed to inject {type.Name}.{injectableMethod.Name}");
 				}
@@ -145,9 +168,11 @@ namespace YooX.DependencyInjection {
 		private void InjectProperty(object instance) {
 			var type = instance.GetType();
 			var injectableProperties = type.GetProperties(Binding).Where(member => Attribute.IsDefined(member, typeof(InjectAttribute)));
+
 			foreach (var injectableProperty in injectableProperties) {
 				var propertyType = injectableProperty.PropertyType;
 				object resolveInstance = Resolve(propertyType);
+
 				if (resolveInstance == null) {
 					throw new Exception($"Failed to resolve {propertyType.Name} for {type.Name}");
 				}
@@ -159,6 +184,7 @@ namespace YooX.DependencyInjection {
 
 		private object Resolve(Type type) {
 			_registry.TryGetValue(type, out object instance);
+
 			return instance;
 		}
 	}

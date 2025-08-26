@@ -6,21 +6,25 @@ namespace UnityEngine.LowLevel {
 	/// Utility class for managing PlayerLoopSystem operations, such as inserting, 
 	/// removing, and printing systems in the Unity player loop.
 	/// </summary>
-	public static class PlayerLoopUtils {
+	static public class PlayerLoopUtils {
 		/// <summary>
 		/// Removes a specified PlayerLoopSystem from the given loop if it matches the provided system.
 		/// </summary>
 		/// <typeparam name="T">The type of the system to remove.</typeparam>
 		/// <param name="loop">The PlayerLoopSystem to search and remove from.</param>
 		/// <param name="systemRemove">The system to remove from the loop.</param>
-		public static void RemoveSystem<T>(ref PlayerLoopSystem loop, in PlayerLoopSystem systemRemove) {
-			if (loop.subSystemList == null) return;
+		static public void RemoveSystem<T>(ref PlayerLoopSystem loop, in PlayerLoopSystem systemRemove) {
+			if (loop.subSystemList == null) {
+				return;
+			}
 
 			var playerLoopSystemList = new List<PlayerLoopSystem>(loop.subSystemList);
+
 			for (var i = 0; i < playerLoopSystemList.Count; i++) {
 				if (playerLoopSystemList[i].type == systemRemove.type && playerLoopSystemList[i].updateDelegate == systemRemove.updateDelegate) {
 					playerLoopSystemList.RemoveAt(i);
 					loop.subSystemList = playerLoopSystemList.ToArray();
+
 					return;
 				}
 			}
@@ -37,13 +41,20 @@ namespace UnityEngine.LowLevel {
 		/// <param name="systemToInsert">The system to insert into the loop.</param>
 		/// <param name="index">The index at which to insert the system.</param>
 		/// <returns>True if the system is inserted, otherwise false.</returns>
-		public static bool InsertSystem<T>(ref PlayerLoopSystem loop, in PlayerLoopSystem systemToInsert, int index) {
-			if (loop.type != typeof(T)) return HandleSubSystemLoop<T>(ref loop, systemToInsert, index);
+		static public bool InsertSystem<T>(ref PlayerLoopSystem loop, in PlayerLoopSystem systemToInsert, int index) {
+			if (loop.type != typeof(T)) {
+				return HandleSubSystemLoop<T>(ref loop, systemToInsert, index);
+			}
 
 			var playerLoopSystemList = new List<PlayerLoopSystem>();
-			if (loop.subSystemList != null) playerLoopSystemList.AddRange(loop.subSystemList);
+
+			if (loop.subSystemList != null) {
+				playerLoopSystemList.AddRange(loop.subSystemList);
+			}
+
 			playerLoopSystemList.Insert(index, systemToInsert);
 			loop.subSystemList = playerLoopSystemList.ToArray();
+
 			return true;
 		}
 
@@ -51,7 +62,7 @@ namespace UnityEngine.LowLevel {
 		/// Prints the structure of the PlayerLoopSystem, showing its subsystems recursively.
 		/// </summary>
 		/// <param name="loop">The root PlayerLoopSystem to print.</param>
-		public static void PrintPlayerLoop(PlayerLoopSystem loop) {
+		static public void PrintPlayerLoop(PlayerLoopSystem loop) {
 			var sb = new StringBuilder();
 			sb.AppendLine("Unity Player Loop");
 
@@ -69,7 +80,9 @@ namespace UnityEngine.LowLevel {
 		/// <param name="loop">The loop to search through.</param>
 		/// <param name="systemRemove">The system to remove.</param>
 		private static void HandleSubSystemLoopForRemoval<T>(ref PlayerLoopSystem loop, PlayerLoopSystem systemRemove) {
-			if (loop.subSystemList == null) return;
+			if (loop.subSystemList == null) {
+				return;
+			}
 
 			for (var i = 0; i < loop.subSystemList.Length; ++i) {
 				RemoveSystem<T>(ref loop.subSystemList[i], systemRemove);
@@ -85,10 +98,15 @@ namespace UnityEngine.LowLevel {
 		/// <param name="index">The index at which to insert the system.</param>
 		/// <returns>True if the system is inserted, otherwise false.</returns>
 		private static bool HandleSubSystemLoop<T>(ref PlayerLoopSystem loop, PlayerLoopSystem systemToInsert, int index) {
-			if (loop.subSystemList == null) return false;
+			if (loop.subSystemList == null) {
+				return false;
+			}
 
 			for (var i = 0; i < loop.subSystemList.Length; ++i) {
-				if (!InsertSystem<T>(ref loop.subSystemList[i], in systemToInsert, index)) continue;
+				if (!InsertSystem<T>(ref loop.subSystemList[i], in systemToInsert, index)) {
+					continue;
+				}
+
 				return true;
 			}
 
@@ -103,12 +121,14 @@ namespace UnityEngine.LowLevel {
 		/// <param name="level">The current level of recursion for indentation.</param>
 		private static void PrintSubSystem(PlayerLoopSystem system, StringBuilder sb, int level) {
 			sb.Append(' ', level * 2).AppendLine(system.type.ToString());
-			if (system.subSystemList == null || system.subSystemList.Length == 0) return;
+
+			if (system.subSystemList == null || system.subSystemList.Length == 0) {
+				return;
+			}
 
 			foreach (var subsystem in system.subSystemList) {
 				PrintSubSystem(subsystem, sb, level + 1);
 			}
 		}
 	}
-
 }

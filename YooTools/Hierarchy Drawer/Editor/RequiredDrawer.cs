@@ -32,7 +32,7 @@ namespace YooTools.HierarchyDrawer {
 		}
 
 		private bool IsFieldUnassigned(SerializedProperty property) {
-			switch(property.propertyType) {
+			switch (property.propertyType) {
 				case SerializedPropertyType.ObjectReference when property.objectReferenceValue:
 				case SerializedPropertyType.ExposedReference when property.exposedReferenceValue:
 				case SerializedPropertyType.AnimationCurve when property.animationCurveValue is {

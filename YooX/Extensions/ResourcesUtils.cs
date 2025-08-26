@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 #endif
 
 namespace YooX {
-    public static class ResourcesUtils {
+	static public class ResourcesUtils {
 #if ENABLED_UNITY_URP
         /// <summary>
         /// Load volume profile from given path.
@@ -15,6 +15,5 @@ namespace YooX {
             volume.profile = profile;
         }
 #endif
-    }
-
+	}
 }

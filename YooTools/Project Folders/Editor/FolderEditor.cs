@@ -5,7 +5,7 @@ using UnityEngine;
 namespace YooTools.ProjectFolders {
 	public class FolderEditor : Editor {
 		[MenuItem("Yoo Tools/Create Folder")]
-		public static void Execute() {
+		static public void Execute() {
 			var assets = GenerateFolderStructure();
 			CreateFolders(assets);
 
@@ -54,7 +54,7 @@ namespace YooTools.ProjectFolders {
 					AssetDatabase.Refresh();
 				}
 
-				AssetDatabase.MoveAsset("Assets/YooTools.dll", $"Assets/{Application.productName}/Plugins/Editor/YooTools.dll");
+				AssetDatabase.MoveAsset("Assets/YooTools.dll", $"Assets/{Application.productName}/Plugins/YooTools.dll");
 
 				AssetDatabase.DeleteAsset("Assets/Readme.asset");
 				AssetDatabase.DeleteAsset("Assets/TutorialInfo");
@@ -64,15 +64,15 @@ namespace YooTools.ProjectFolders {
 		}
 
 		[MenuItem("Yoo Tools/Create Folder", true, 0)]
-		public static bool ValidateExecute() => !AssetDatabase.IsValidFolder($"Assets/{Application.productName}");
+		static public bool ValidateExecute() => !AssetDatabase.IsValidFolder($"Assets/{Application.productName}");
 
-		public static void Move(string newParentFolder, string folderName) {
+		static public void Move(string newParentFolder, string folderName) {
 			var sourcePath = $"Assets/{folderName}";
 
 			if (AssetDatabase.IsValidFolder(sourcePath)) {
 				var destinationFolder = $"Assets/{newParentFolder}/{folderName}";
 
-				var error = AssetDatabase.MoveAsset(sourcePath, destinationFolder);
+				string error = AssetDatabase.MoveAsset(sourcePath, destinationFolder);
 
 				if (!string.IsNullOrEmpty(error)) {
 					Debug.LogError($"Failed to move {folderName}: {error}");
@@ -80,7 +80,7 @@ namespace YooTools.ProjectFolders {
 			}
 		}
 
-		public static void Delete(string folderName) {
+		static public void Delete(string folderName) {
 			var pathToDelete = $"Assets/{folderName}";
 
 			if (AssetDatabase.IsValidFolder(pathToDelete)) {
@@ -105,7 +105,6 @@ namespace YooTools.ProjectFolders {
 				Debug.Log($"Creating '.keep' file in: <b>{rootFolder.CurrentFolder}</b>");
 			} else {
 				if (Directory.GetFiles(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + rootFolder.CurrentFolder).Length < 1) {
-
 					File.Create(
 						Directory.GetCurrentDirectory()
 						+ Path.DirectorySeparatorChar
@@ -113,8 +112,6 @@ namespace YooTools.ProjectFolders {
 						+ Path.DirectorySeparatorChar
 						+ ".keep"
 					);
-
-
 				} else {
 					Debug.Log($"Directory <b>{rootFolder.CurrentFolder}</b> already exists");
 				}
@@ -171,6 +168,5 @@ namespace YooTools.ProjectFolders {
 
 			return rootFolder;
 		}
-
 	}
 }

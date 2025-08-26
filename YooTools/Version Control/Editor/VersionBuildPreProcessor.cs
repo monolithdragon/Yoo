@@ -23,11 +23,12 @@ namespace YooTools.VersionControl {
 			UpdateCurrentVersion(versionSo);
 			EditorUtility.SetDirty(versionSo);
 			AssetDatabase.SaveAssets();
-
 		}
 
 		private void UpdateCurrentVersion(CurrentVersion currentVersion) {
-			if (currentVersion == null) return;
+			if (currentVersion == null) {
+				return;
+			}
 
 			if (VersionControl.GitDirectory != null) {
 				currentVersion.version.gitBranch = VersionControl.GetGitBranch();
@@ -38,6 +39,5 @@ namespace YooTools.VersionControl {
 			currentVersion.version.isDevelopment = Debug.isDebugBuild;
 			currentVersion.version.buildDateTime = DateTime.Now.ToString("u");
 		}
-
 	}
 }

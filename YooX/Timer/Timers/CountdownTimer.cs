@@ -21,5 +21,4 @@ namespace YooX.Timer {
 
 		public override bool IsFinished => CurrentTime <= 0f;
 	}
-
 }

@@ -10,9 +10,9 @@ namespace YooX.EventBus {
 	/// <summary>
 	/// Contains methods and properties related to event buses and event types in the Unity application.
 	/// </summary>
-	public static class EventBusUtil {
-		public static IReadOnlyList<Type> EventTypes { get; set; }
-		public static IReadOnlyList<Type> EventBusTypes { get; set; }
+	static public class EventBusUtil {
+		static public IReadOnlyList<Type> EventTypes { get; set; }
+		static public IReadOnlyList<Type> EventBusTypes { get; set; }
 
 #if UNITY_EDITOR
 		public static PlayModeStateChange PlayModeStateChange { get; set; }
@@ -48,7 +48,7 @@ namespace YooX.EventBus {
 		/// done before any game objects, scripts or components have started.
 		/// </summary>
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-		public static void Initialize() {
+		static public void Initialize() {
 			EventTypes = PredefinedAssemblyUtil.GetTypes(typeof(IEvent));
 			EventBusTypes = InitializeAllBuses();
 		}
@@ -56,6 +56,7 @@ namespace YooX.EventBus {
 		private static List<Type> InitializeAllBuses() {
 			var eventBuses = new List<Type>();
 			var typeDef = typeof(EventBus<>);
+
 			foreach (var eventType in EventTypes!) {
 				var busType = typeDef.MakeGenericType(eventType);
 				eventBuses.Add(busType);
@@ -68,8 +69,9 @@ namespace YooX.EventBus {
 		/// <summary>
 		/// Clears (removes all listeners from) all event buses in the application.
 		/// </summary>
-		public static void ClearAllBuses() {
+		static public void ClearAllBuses() {
 			Debug.Log("Clearing All EventBuses...");
+
 			foreach (var busType in EventBusTypes!) {
 				var clearMethod = busType.GetMethod("Clear", BindingFlags.NonPublic | BindingFlags.Static);
 				clearMethod?.Invoke(null, null);

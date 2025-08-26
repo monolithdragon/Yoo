@@ -6,8 +6,8 @@ namespace YooX.Timer {
 	/// Represents an timer that tracks time progression and provides basic timer functionality.
 	/// </summary>    
 	public abstract class Timer : IDisposable {
-
 		#region Fields
+
 		/// <summary>
 		/// The initial time set for the timer.
 		/// </summary>
@@ -17,9 +17,11 @@ namespace YooX.Timer {
 		/// Indicates if the object has been disposed.
 		/// </summary>
 		private bool _disposedValue;
+
 		#endregion
 
 		#region Properties
+
 		/// <summary>
 		/// The current remaining time on the timer.
 		/// </summary>
@@ -39,9 +41,11 @@ namespace YooX.Timer {
 		/// Determine if the timer has finished.
 		/// </summary>
 		public abstract bool IsFinished { get; }
+
 		#endregion
 
 		#region Delegates
+
 		/// <summary>
 		/// Event triggered when the timer starts.
 		/// </summary>
@@ -51,9 +55,11 @@ namespace YooX.Timer {
 		/// Event triggered when the timer stops.
 		/// </summary>
 		public Action OnTimerStop = delegate { };
+
 		#endregion
 
 		#region Methods
+
 		protected Timer(float initialTime) => _initialTime = initialTime;
 
 		/// <summary>
@@ -108,16 +114,19 @@ namespace YooX.Timer {
 		/// Define how the timer progresses.
 		/// </summary>
 		public abstract void Tick();
+
 		#endregion
 
 		#region IDisposable
+
 		/// <summary>
 		/// Disposes of the timer, unregistering it and releasing resources.
 		/// </summary>
 		/// <param name="disposing">Indicates if managed resources should be disposed.</param>
-		protected virtual void Dispose(bool disposing) {
-			if (_disposedValue)
+		virtual protected void Dispose(bool disposing) {
+			if (_disposedValue) {
 				return;
+			}
 
 			if (disposing) {
 				TimerManager.RemoveTimer(this);
@@ -129,9 +138,7 @@ namespace YooX.Timer {
 		/// <summary>
 		/// Finalizer to ensure the timer is disposed properly.
 		/// </summary>
-		~Timer() {
-			Dispose(false);
-		}
+		~Timer() => Dispose(false);
 
 		/// <summary>
 		/// Public method to dispose the timer and suppress finalization.
@@ -140,8 +147,7 @@ namespace YooX.Timer {
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
 		#endregion
-
 	}
-
 }

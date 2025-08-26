@@ -2,10 +2,9 @@
 using Unity.Mathematics;
 #endif
 
-
 namespace YooX {
-    public static class MathfExtension {
-        #region Min
+	static public class MathfExtension {
+		#region Min
 
 #if ENABLED_UNITY_MATHEMATICS
         public static half Min(half a, half b) {
@@ -29,29 +28,32 @@ namespace YooX {
         }
 #endif
 
-        public static double Min(double a, double b) {
-            return (a < b) ? a : b;
-        }
+		static public double Min(double a, double b) =>
+			a < b
+				? a
+				: b;
 
-        public static double Min(params double[] values) {
-            var num = values.Length;
-            if (num == 0) {
-                return 0f;
-            }
+		static public double Min(params double[] values) {
+			int num = values.Length;
 
-            var num2 = values[0];
-            for (var i = 1; i < num; i++) {
-                if (values[i] < num2) {
-                    num2 = values[i];
-                }
-            }
+			if (num == 0) {
+				return 0f;
+			}
 
-            return num2;
-        }
+			double num2 = values[0];
 
-        #endregion
+			for (var i = 1; i < num; i++) {
+				if (values[i] < num2) {
+					num2 = values[i];
+				}
+			}
 
-        #region Max
+			return num2;
+		}
+
+		#endregion
+
+		#region Max
 
 #if ENABLED_UNITY_MATHEMATICS
         public static half Max(half a, half b) {
@@ -75,27 +77,29 @@ namespace YooX {
         }
 #endif
 
-        public static double Max(double a, double b) {
-            return (a > b) ? a : b;
-        }
+		static public double Max(double a, double b) =>
+			a > b
+				? a
+				: b;
 
-        public static double Max(params double[] values) {
-            var num = values.Length;
-            if (num == 0) {
-                return 0f;
-            }
+		static public double Max(params double[] values) {
+			int num = values.Length;
 
-            var num2 = values[0];
-            for (var i = 1; i < num; i++) {
-                if (values[i] > num2) {
-                    num2 = values[i];
-                }
-            }
+			if (num == 0) {
+				return 0f;
+			}
 
-            return num2;
-        }
+			double num2 = values[0];
 
-        #endregion
-    }
+			for (var i = 1; i < num; i++) {
+				if (values[i] > num2) {
+					num2 = values[i];
+				}
+			}
 
+			return num2;
+		}
+
+		#endregion
+	}
 }

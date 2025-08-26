@@ -18,12 +18,15 @@ namespace YooX.ServiceLocator {
 		private const string GlobalServiceLocatorName = "ServiceLocator [Global]";
 		private const string SceneServiceLocatorName = "ServiceLocator [Scene]";
 
-		public static ServiceLocator Global {
+		static public ServiceLocator Global {
 			get {
-				if (_global != null) return _global;
+				if (_global != null) {
+					return _global;
+				}
 
 				if (FindFirstObjectByType<ServiceLocatorGlobalBootstrapper>() is { } found) {
 					found.BootstrapOnDemand();
+
 					return _global;
 				}
 
@@ -42,9 +45,9 @@ namespace YooX.ServiceLocator {
 			}
 		}
 
-		public static ServiceLocator For(MonoBehaviour mb) => mb.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(mb) ?? Global;
+		static public ServiceLocator For(MonoBehaviour mb) => mb.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(mb) ?? Global;
 
-		public static ServiceLocator ForSceneOf(MonoBehaviour mb) {
+		static public ServiceLocator ForSceneOf(MonoBehaviour mb) {
 			var scene = mb.gameObject.scene;
 
 			if (_sceneContainers.TryGetValue(scene, out var container)) {
@@ -57,6 +60,7 @@ namespace YooX.ServiceLocator {
 			foreach (var go in _sceneGameObjects.Where(go => go.GetComponent<ServiceLocatorSceneBootstrapper>() != null)) {
 				if (go.TryGetComponent(out ServiceLocatorSceneBootstrapper bootstrapper) && bootstrapper.Container != mb) {
 					bootstrapper.BootstrapOnDemand();
+
 					return bootstrapper.Container;
 				}
 			}
@@ -66,19 +70,24 @@ namespace YooX.ServiceLocator {
 
 		public ServiceLocator Register<T>(T service) {
 			_serviceManager.Register(service);
+
 			return this;
 		}
 
 		public ServiceLocator Register(Type type, object service) {
 			_serviceManager.Register(type, service);
+
 			return this;
 		}
 
 		public ServiceLocator Get<T>(out T service) where T : class {
-			if (TryGetService(out service)) return this;
+			if (TryGetService(out service)) {
+				return this;
+			}
 
 			if (TryGetNextInHierarchy(out var container)) {
 				container.Get(out service);
+
 				return this;
 			}
 
@@ -92,6 +101,7 @@ namespace YooX.ServiceLocator {
 				Debug.LogError("Another ServiceLocator is already configured as global");
 			} else {
 				_global = this;
+
 				if (dontDestroyOnLoad) {
 					transform.SetParent(null);
 					DontDestroyOnLoad(gameObject);
@@ -104,6 +114,7 @@ namespace YooX.ServiceLocator {
 
 			if (_sceneContainers.ContainsKey(scene)) {
 				Debug.LogError("Another ServiceLocator is already configured for this scene");
+
 				return;
 			}
 
@@ -115,10 +126,12 @@ namespace YooX.ServiceLocator {
 		private bool TryGetNextInHierarchy(out ServiceLocator container) {
 			if (this == _global) {
 				container = null;
+
 				return false;
 			}
 
 			container = transform.parent.OrNull()?.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(this);
+
 			return container != null;
 		}
 

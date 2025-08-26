@@ -25,9 +25,7 @@ namespace YooX.Timer {
 		/// Constructor that initializes the timer with a specified ticks-per-second rate.
 		/// </summary>
 		/// <param name="ticksPerSecond">Number of ticks per second.</param>
-		public FrequencyTimer(int ticksPerSecond) : base(0) {
-			CalculateTimeThreshold(ticksPerSecond);
-		}
+		public FrequencyTimer(int ticksPerSecond) : base(0) => CalculateTimeThreshold(ticksPerSecond);
 
 		public override void Tick() {
 			// Triggering the OnTick event when the threshold is met.
@@ -60,5 +58,4 @@ namespace YooX.Timer {
 			_timeThreshold = 1f / TicksPerSecond;
 		}
 	}
-
 }

@@ -32,6 +32,7 @@ namespace YooX.SerializeInterface {
 			);
 
 			float yOffset = EditorGUIUtility.singleLineHeight;
+
 			for (var i = 0; i < property.arraySize; i++) {
 				var element = property.GetArrayElementAtIndex(i);
 				var elementRect = new Rect(position.x, position.y + yOffset, position.width, EditorGUIUtility.singleLineHeight);
@@ -57,10 +58,17 @@ namespace YooX.SerializeInterface {
 				: fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>) ? fieldType.GetGenericArguments()[0]
 				: fieldType;
 
-			if (interfaceType.IsAssignableFrom(elementType)) return elementType;
+			if (interfaceType.IsAssignableFrom(elementType)) {
+				return elementType;
+			}
 
-			if (typeof(ScriptableObject).IsAssignableFrom(elementType)) return typeof(ScriptableObject);
-			if (typeof(MonoBehaviour).IsAssignableFrom(elementType)) return typeof(MonoBehaviour);
+			if (typeof(ScriptableObject).IsAssignableFrom(elementType)) {
+				return typeof(ScriptableObject);
+			}
+
+			if (typeof(MonoBehaviour).IsAssignableFrom(elementType)) {
+				return typeof(MonoBehaviour);
+			}
 
 			return typeof(Object);
 		}
@@ -68,12 +76,15 @@ namespace YooX.SerializeInterface {
 		private void ValidateAndAssignObject(SerializedProperty property, Object newReference, Type interfaceType) {
 			if (newReference is GameObject gameObject) {
 				var component = gameObject.GetComponent(interfaceType);
+
 				if (component != null) {
 					property.objectReferenceValue = component;
+
 					return;
 				}
 			} else if (interfaceType.IsAssignableFrom(newReference.GetType())) {
 				property.objectReferenceValue = newReference;
+
 				return;
 			}
 
@@ -82,10 +93,15 @@ namespace YooX.SerializeInterface {
 		}
 
 		private Type GetTypeOrElementType(Type type) {
-			if (type.IsArray) return type.GetElementType();
-			if (type.IsGenericType) return type.GetGenericArguments()[0];
+			if (type.IsArray) {
+				return type.GetElementType();
+			}
+
+			if (type.IsGenericType) {
+				return type.GetGenericArguments()[0];
+			}
+
 			return type;
 		}
 	}
-
 }

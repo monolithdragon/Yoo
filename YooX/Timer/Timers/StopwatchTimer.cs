@@ -16,5 +16,4 @@ namespace YooX.Timer {
 			}
 		}
 	}
-
 }

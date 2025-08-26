@@ -38,7 +38,6 @@ namespace YooX.SerializeInterface {
 				underlyingProperty.objectReferenceValue = null;
 			}
 
-
 			EditorGUI.EndProperty();
 			InterfaceReferenceUtil.OnGUI(position, underlyingProperty, label, args);
 		}
@@ -50,15 +49,21 @@ namespace YooX.SerializeInterface {
 				objType = null;
 				intfType = null;
 
-				if (type?.IsGenericType != true) return false;
+				if (type?.IsGenericType != true) {
+					return false;
+				}
 
 				var genericType = type.GetGenericTypeDefinition();
-				if (genericType == typeof(InterfaceReference<>)) type = type.BaseType;
+
+				if (genericType == typeof(InterfaceReference<>)) {
+					type = type.BaseType;
+				}
 
 				if (type?.GetGenericTypeDefinition() == typeof(InterfaceReference<,>)) {
 					var types = type.GetGenericArguments();
 					intfType = types[0];
 					objType = types[1];
+
 					return true;
 				}
 
@@ -70,7 +75,7 @@ namespace YooX.SerializeInterface {
 				intType = null;
 
 				var listInterface = type.GetInterfaces()
-				                        .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
+										.FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
 
 				if (listInterface != null) {
 					var elementType = listInterface.GetGenericArguments()[0];
@@ -89,11 +94,14 @@ namespace YooX.SerializeInterface {
 			if (targetObject != null) {
 				property.objectReferenceValue = targetObject;
 			} else {
-				string message = interfaceName != null ? $"GameObject '{componentNameOrType}'" : "assigned object";
+				string message = interfaceName != null
+					? $"GameObject '{componentNameOrType}'"
+					: "assigned object";
 
 				Debug.LogWarning(
 					$"The {message} does not have a component that implements '{interfaceName}'."
 				);
+
 				property.objectReferenceValue = null;
 			}
 		}
@@ -111,5 +119,4 @@ namespace YooX.SerializeInterface {
 			InterfaceType = interfaceType;
 		}
 	}
-
 }

@@ -21,7 +21,11 @@ namespace YooX.DependencyInjection {
 
 			if (_icon != null) {
 				var savedColor = GUI.color;
-				GUI.color = property.objectReferenceValue == null ? savedColor : Color.green;
+
+				GUI.color = property.objectReferenceValue == null
+					? savedColor
+					: Color.green;
+
 				GUI.DrawTexture(iconRect, _icon);
 				GUI.color = savedColor;
 			}

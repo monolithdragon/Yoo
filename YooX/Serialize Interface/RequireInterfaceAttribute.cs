@@ -11,5 +11,4 @@ namespace YooX.SerializeInterface {
 			InterfaceType = interfaceType;
 		}
 	}
-
 }

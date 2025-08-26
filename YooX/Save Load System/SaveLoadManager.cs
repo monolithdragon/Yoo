@@ -19,9 +19,7 @@ namespace YooX.SaveLoadSystem {
 		private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
 		private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
-		public void NewGame() {
-			SceneManager.LoadScene(gameData.CurrentLevelName);
-		}
+		public void NewGame() => SceneManager.LoadScene(gameData.CurrentLevelName);
 
 		public void SaveGame() => _dataService.Save(gameData);
 
@@ -40,6 +38,7 @@ namespace YooX.SaveLoadSystem {
 
 		private void Bind([NotNull] ISaveable data) {
 			var entity = FindObjectsByType<T>(FindObjectsSortMode.None).FirstOrDefault();
+
 			if (entity != null) {
 				entity.Bind(data);
 			}
@@ -50,13 +49,20 @@ namespace YooX.SaveLoadSystem {
 
 			foreach (var entity in entities) {
 				var data = dataList.FirstOrDefault(d => d.Id == entity.Id);
-				if (data == null) continue;
+
+				if (data == null) {
+					continue;
+				}
+
 				entity.Bind(data);
 			}
 		}
 
 		private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-			if (scene.name == "MainMenu") return;
+			if (scene.name == "MainMenu") {
+				return;
+			}
+
 			Bind(gameData.Data);
 		}
 	}

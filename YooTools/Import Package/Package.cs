@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 
 namespace YooTools.ImportPackage {
-    public class Package {
-        public string Name { get; }
-        public Queue<string> Packages { get; }
+	public class Package {
+		public string Name { get; }
+		public Queue<string> Packages { get; }
 
-        public Package(params string[] names) {
-            Packages = new Queue<string>();
+		public Package(params string[] names) {
+			Packages = new Queue<string>();
 
-            foreach (var name in names) {
-                Name = name;
-                Packages.Enqueue(name);
-            }
-        }
-    }
+			foreach (string name in names) {
+				Name = name;
+				Packages.Enqueue(name);
+			}
+		}
+	}
 }

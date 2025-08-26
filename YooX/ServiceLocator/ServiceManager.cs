@@ -45,10 +45,12 @@ namespace YooX.ServiceLocator {
 
 			if (_services.TryGetValue(type, out object obj)) {
 				service = obj as TService;
+
 				return true;
 			}
 
 			service = null;
+
 			return false;
 		}
 	}

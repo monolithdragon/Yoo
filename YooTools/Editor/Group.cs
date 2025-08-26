@@ -6,19 +6,22 @@ namespace YooTools {
 		private static GameObject _groupParent;
 
 		[MenuItem("GameObject/Group %g", false, -999)]
-		private static void GroupMenu() {
-			GroupSelectedTransforms();
-		}
+		private static void GroupMenu() => GroupSelectedTransforms();
 
 		private static void GroupSelectedTransforms(string name = "Group", string tag = null, Vector3 position = default, bool calcCenter = true, bool bottomY = false, bool roundToInt = false) {
 			var currentSelection = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.Editable);
-			if (currentSelection.Length == 0) return;
+
+			if (currentSelection.Length == 0) {
+				return;
+			}
 
 			_groupParent = new GameObject(name);
-			Undo.RegisterCreatedObjectUndo(_groupParent, "Created group");// V 4.3+
+			Undo.RegisterCreatedObjectUndo(_groupParent, "Created group"); // V 4.3+
+
 			if (Selection.activeTransform != null) {
 				_groupParent.transform.SetParent(Selection.activeTransform.parent);
 				_groupParent.transform.SetSiblingIndex(Selection.activeTransform.GetSiblingIndex());
+
 				if (Selection.activeTransform.parent != null && Selection.activeTransform.parent.GetComponent<RectTransform>() != null) {
 					var rectTransform = Undo.AddComponent<RectTransform>(_groupParent);
 					rectTransform.localScale = Vector3.one;
@@ -27,23 +30,33 @@ namespace YooTools {
 
 			if (calcCenter) {
 				position = Vector3.zero;
+
 				foreach (var groupMember in currentSelection) {
 					position += groupMember.transform.position;
 				}
-				if (currentSelection.Length > 0) position /= currentSelection.Length;
+
+				if (currentSelection.Length > 0) {
+					position /= currentSelection.Length;
+				}
 
 				if (bottomY) {
 					foreach (var groupMember in currentSelection) {
-						if (groupMember.transform.position.y < position.y) position.y = groupMember.transform.position.y;
-						if (groupMember.GetComponent<Collider>())
-							if (groupMember.GetComponent<Collider>().bounds.min.y < position.y)
+						if (groupMember.transform.position.y < position.y) {
+							position.y = groupMember.transform.position.y;
+						}
+
+						if (groupMember.GetComponent<Collider>()) {
+							if (groupMember.GetComponent<Collider>().bounds.min.y < position.y) {
 								position.y = groupMember.GetComponent<Collider>().bounds.min.y;
-						if (groupMember.GetComponent<Renderer>())
-							if (groupMember.GetComponent<Renderer>().bounds.min.y < position.y)
+							}
+						}
+
+						if (groupMember.GetComponent<Renderer>()) {
+							if (groupMember.GetComponent<Renderer>().bounds.min.y < position.y) {
 								position.y = groupMember.GetComponent<Renderer>().bounds.min.y;
-
+							}
+						}
 					}
-
 				}
 
 				if (roundToInt) {
@@ -52,7 +65,9 @@ namespace YooTools {
 					position.z = Mathf.RoundToInt(position.z);
 				}
 			}
+
 			_groupParent.transform.position = position;
+
 			if (tag != null) {
 				try {
 					_groupParent.tag = tag;
@@ -60,9 +75,11 @@ namespace YooTools {
 					Debug.Log("The tag '" + tag + "' is not defined, please add the tag in the tag manager!");
 				}
 			}
+
 			foreach (var groupMember in currentSelection) {
 				Undo.SetTransformParent(groupMember.transform, _groupParent.transform, "Group");
 			}
+
 			var newSel = new GameObject[1];
 			newSel[0] = _groupParent;
 			Selection.objects = newSel;
@@ -78,8 +95,9 @@ namespace YooTools {
 		public string gTag;
 
 		[MenuItem("GameObject/Group...", false, -998)]
-		public static void Init() {
+		static public void Init() {
 			var win = GetWindow(typeof(Group)) as Group;
+
 			if (win != null) {
 				win.autoRepaintOnSceneChange = true;
 			}
@@ -114,7 +132,9 @@ namespace YooTools {
 			centerPosition = EditorGUILayout.Toggle(centerPosition);
 			GUILayout.EndHorizontal();
 
-			if (!centerPosition) GUI.enabled = false;
+			if (!centerPosition) {
+				GUI.enabled = false;
+			}
 
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("... and at the bottom of the group (min Y): ");
@@ -126,7 +146,11 @@ namespace YooTools {
 			GUI.enabled = true;
 
 			GUILayout.BeginHorizontal();
-			if (centerPosition) GUI.enabled = false;
+
+			if (centerPosition) {
+				GUI.enabled = false;
+			}
+
 			parentPosition = EditorGUILayout.Vector3Field("Parent Position:", parentPosition);
 			GUILayout.EndHorizontal();
 
@@ -137,12 +161,15 @@ namespace YooTools {
 			GUILayout.Space(20);
 
 			GUILayout.BeginHorizontal();
+
 			if (GUILayout.Button("Close")) {
 				Close();
 			}
+
 			if (GUILayout.Button("Group")) {
 				GroupSelectedTransforms(groupName, gTag, parentPosition, centerPosition, centerBottomY);
 			}
+
 			if (GUILayout.Button("Group & Close")) {
 				GroupSelectedTransforms(groupName, gTag, parentPosition, centerPosition, centerBottomY);
 				Close();
@@ -158,13 +185,17 @@ namespace YooTools {
 			var currentSelection = Selection.GetTransforms(SelectionMode.Editable);
 			Transform grandfatherObject;
 			GameObject parentObject;
-			if (currentSelection.Length == 0) return;
+
+			if (currentSelection.Length == 0) {
+				return;
+			}
 
 			foreach (var groupMember in currentSelection) {
 				parentObject = groupMember.parent.gameObject;
 				grandfatherObject = parentObject.transform.parent;
 				Undo.SetTransformParent(groupMember.transform, grandfatherObject, "Ungroup");
 				groupMember.transform.SetSiblingIndex(grandfatherObject.GetSiblingIndex());
+
 				if (parentObject.GetComponents<Component>().Length < 2) {
 					if (parentObject.transform.childCount == 0) {
 						Debug.Log("Empty group object \"" + parentObject.name + "\" deleted!");
@@ -175,15 +206,18 @@ namespace YooTools {
 		}
 
 		private static bool CheckGroupSelection() {
-			if (Selection.activeTransform == null) return false;
+			if (Selection.activeTransform == null) {
+				return false;
+			}
 
-			if (Selection.activeTransform.parent == null) return false;
+			if (Selection.activeTransform.parent == null) {
+				return false;
+			}
 
 			return true;
 		}
 
 		[MenuItem("GameObject/Ungroup %#g", true, -997)]
 		private static bool ValidateGroupSelection() => CheckGroupSelection();
-
 	}
 }

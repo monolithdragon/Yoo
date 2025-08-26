@@ -2,15 +2,19 @@
 using UnityEngine;
 
 namespace YooX.SerializeInterface {
-	public static class InterfaceReferenceUtil {
+	static public class InterfaceReferenceUtil {
 		private static GUIStyle _labelStyle;
 
-		public static void OnGUI(Rect position, SerializedProperty property, GUIContent label, InterfaceArgs args) {
+		static public void OnGUI(Rect position, SerializedProperty property, GUIContent label, InterfaceArgs args) {
 			InitializeStyleIfNeeded();
 
 			int controlID = GUIUtility.GetControlID(FocusType.Passive) - 1;
 			bool isHovering = position.Contains(Event.current.mousePosition);
-			string displayString = property.objectReferenceValue == null || isHovering ? $"({args.InterfaceType.Name})" : "*";
+
+			string displayString = property.objectReferenceValue == null || isHovering
+				? $"({args.InterfaceType.Name})"
+				: "*";
+
 			DrawInterfaceNameLabel(position, displayString, controlID);
 		}
 
@@ -32,17 +36,15 @@ namespace YooX.SerializeInterface {
 		}
 
 		private static void InitializeStyleIfNeeded() {
-			if (_labelStyle != null) return;
+			if (_labelStyle != null) {
+				return;
+			}
 
 			var style = new GUIStyle(EditorStyles.label) {
-				font = EditorStyles.objectField.font,
-				fontSize = EditorStyles.objectField.fontSize,
-				fontStyle = EditorStyles.objectField.fontStyle,
-				alignment = TextAnchor.MiddleRight,
-				padding = new RectOffset(0, 2, 0, 0)
+				font = EditorStyles.objectField.font, fontSize = EditorStyles.objectField.fontSize, fontStyle = EditorStyles.objectField.fontStyle, alignment = TextAnchor.MiddleRight, padding = new RectOffset(0, 2, 0, 0)
 			};
+
 			_labelStyle = style;
 		}
 	}
-
 }

@@ -11,7 +11,7 @@ namespace YooTools.ImportPackage {
 		private static Package package;
 
 		[MenuItem("Yoo Tools/Install Essentials Packages")]
-		public static void Execute() {
+		static public void Execute() {
 			package = new Package("https://github.com/KyleBanks/scene-ref-attribute.git", "com.unity.project-auditor");
 			InstallPackages();
 		}
@@ -25,14 +25,16 @@ namespace YooTools.ImportPackage {
 		private static async void StartNextPackageInstallation() {
 			request = Client.Add(package.Packages.Dequeue());
 
-			while(!request.IsCompleted) await Task.Delay(10);
+			while (!request.IsCompleted) await Task.Delay(10);
 
-			switch(request.Status) {
+			switch (request.Status) {
 				case StatusCode.Success:
 					Debug.Log($"Installed: {request.Result.packageId}");
+
 					break;
 				case StatusCode.Failure:
 					Debug.LogError(request.Error.message);
+
 					break;
 				case StatusCode.InProgress:
 					break;
@@ -45,6 +47,5 @@ namespace YooTools.ImportPackage {
 				StartNextPackageInstallation();
 			}
 		}
-
 	}
 }

@@ -11,13 +11,19 @@ namespace YooX {
 
 		public TLeft Left {
 			get {
-				if (IsRight) throw new InvalidOperationException("No Left value presented");
+				if (IsRight) {
+					throw new InvalidOperationException("No Left value presented");
+				}
+
 				return _left;
 			}
 		}
 		public TRight Right {
 			get {
-				if (IsLeft) throw new InvalidOperationException("No Right value presented");
+				if (IsLeft) {
+					throw new InvalidOperationException("No Right value presented");
+				}
+
 				return _right;
 			}
 		}
@@ -28,19 +34,30 @@ namespace YooX {
 			_isRight = isRight;
 		}
 
-		public static Either<TLeft, TRight> FromLeft(TLeft left) => new(left, default, false);
-		public static Either<TLeft, TRight> FromRight(TRight right) => new(default, right, true);
+		static public Either<TLeft, TRight> FromLeft(TLeft left) => new(left, default, false);
+		static public Either<TLeft, TRight> FromRight(TRight right) => new(default, right, true);
 
-		public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc) => IsRight ? rightFunc(_right) : leftFunc(_left);
+		public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc) =>
+			IsRight
+				? rightFunc(_right)
+				: leftFunc(_left);
 
-		public Either<TLeft, TResult> SelectMany<TResult>(Func<TRight, Either<TLeft, TResult>> bind) => IsRight ? bind(_right) : Either<TLeft, TResult>.FromLeft(_left);
+		public Either<TLeft, TResult> SelectMany<TResult>(Func<TRight, Either<TLeft, TResult>> bind) =>
+			IsRight
+				? bind(_right)
+				: Either<TLeft, TResult>.FromLeft(_left);
 
-		public Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> map) => IsRight ? Either<TLeft, TResult>.FromRight(map(_right)) : Either<TLeft, TResult>.FromLeft(_left);
+		public Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> map) =>
+			IsRight
+				? Either<TLeft, TResult>.FromRight(map(_right))
+				: Either<TLeft, TResult>.FromLeft(_left);
 
-		public static implicit operator Either<TLeft, TRight>(TLeft left) => FromLeft(left);
-		public static implicit operator Either<TLeft, TRight>(TRight right) => FromRight(right);
+		static public implicit operator Either<TLeft, TRight>(TLeft left) => FromLeft(left);
+		static public implicit operator Either<TLeft, TRight>(TRight right) => FromRight(right);
 
-		public override string ToString() => IsRight ? $"Right({_right})" : $"Left({_left})";
-
+		public override string ToString() =>
+			IsRight
+				? $"Right({_right})"
+				: $"Left({_left})";
 	}
 }

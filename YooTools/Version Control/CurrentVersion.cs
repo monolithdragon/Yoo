@@ -7,9 +7,12 @@ namespace YooTools.VersionControl {
 
 		private static CurrentVersion _instance;
 
-		public static CurrentVersion Instance {
+		static public CurrentVersion Instance {
 			get {
-				if (_instance == null) _instance = Resources.Load<CurrentVersion>(nameof(CurrentVersion));
+				if (_instance == null) {
+					_instance = Resources.Load<CurrentVersion>(nameof(CurrentVersion));
+				}
+
 				if (_instance == null) {
 					Debug.LogWarning($"No instance of {nameof(CurrentVersion)} found, using default values");
 					_instance = CreateInstance<CurrentVersion>();
@@ -36,6 +39,5 @@ namespace YooTools.VersionControl {
 				_instance = null;
 			}
 		}
-
 	}
 }

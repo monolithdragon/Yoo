@@ -2,30 +2,37 @@
 using System.IO;
 
 namespace YooTools.ProjectFolders {
-    public class Folder {
-        public readonly List<Folder> Folders;
+	public class Folder {
+		public readonly List<Folder> Folders;
 
-        public string Name { get; private set; }
-        public string CurrentFolder { get; private set; }
-        public string ParentFolder { get; private set; }
+		public string Name { get; private set; }
+		public string CurrentFolder { get; private set; }
+		public string ParentFolder { get; private set; }
 
-        public Folder(string name, string parentFolder) {
-            Name = name;
-            ParentFolder = parentFolder;
-            CurrentFolder = parentFolder != string.Empty ? ParentFolder + Path.DirectorySeparatorChar + Name : Name;
-            Folders = new List<Folder>();
-        }
+		public Folder(string name, string parentFolder) {
+			Name = name;
+			ParentFolder = parentFolder;
 
-        /// <summary>
-        /// Add new folder.
-        /// </summary>
-        /// <param name="name">Name of folder</param>
-        /// <returns>The new folder.</returns>
-        public Folder Add(string name) {
-            var folder = ParentFolder.Length > 0 ? new Folder(name, ParentFolder + Path.DirectorySeparatorChar + Name)
-                : new Folder(name, Name);
-            Folders.Add(folder);
-            return folder;
-        }
-    }
+			CurrentFolder = parentFolder != string.Empty
+				? ParentFolder + Path.DirectorySeparatorChar + Name
+				: Name;
+
+			Folders = new List<Folder>();
+		}
+
+		/// <summary>
+		/// Add new folder.
+		/// </summary>
+		/// <param name="name">Name of folder</param>
+		/// <returns>The new folder.</returns>
+		public Folder Add(string name) {
+			var folder = ParentFolder.Length > 0
+				? new Folder(name, ParentFolder + Path.DirectorySeparatorChar + Name)
+				: new Folder(name, Name);
+
+			Folders.Add(folder);
+
+			return folder;
+		}
+	}
 }
