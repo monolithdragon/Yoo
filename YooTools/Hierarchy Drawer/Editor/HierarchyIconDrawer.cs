@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace YooTools.HierarchyDrawer {
 	[InitializeOnLoad]
 	static public class HierarchyIconDrawer {
-		private static readonly Texture2D RequiredIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.unity.2d.animation/Editor/Assets/EditorIcons/Dark/d_Warning@2x.png");
+		private static readonly GUIContent RequiredIcon = EditorGUIUtility.IconContent("console.erroricon.sml", "One or more required fields are missing or empty!");
 		private static readonly Dictionary<Type, FieldInfo[]> CachedFieldInfo = new();
 
 		static HierarchyIconDrawer() => EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowItemOnGUI;
@@ -31,12 +32,15 @@ namespace YooTools.HierarchyDrawer {
 				}
 
 				if (fields.Any(field => IsFieldUnassigned(field.GetValue(component)))) {
-					var iconRect = new Rect(selectionRect.xMax - 20f, selectionRect.y, 16f, 16f);
-					GUI.Label(iconRect, new GUIContent(RequiredIcon, "One or more required fields are missing or empty!"));
+					// Jobb oldali ikon a Hierarchy mező végén
+					var iconRect = new Rect(selectionRect.xMax - 18f, selectionRect.y + 1f, 16f, 16f);
+					GUI.Label(iconRect, RequiredIcon);
 
 					break;
 				}
 			}
+
+			InternalEditorUtility.RepaintAllViews();
 		}
 
 		private static bool IsFieldUnassigned(object fieldValue) {
@@ -45,11 +49,7 @@ namespace YooTools.HierarchyDrawer {
 				case string stringValue when string.IsNullOrEmpty(stringValue):
 					return true;
 				case IEnumerable enumerable: {
-					if (enumerable.Cast<object>().Any(item => item == null)) {
-						return true;
-					}
-
-					break;
+					return enumerable.Cast<object>().Any(item => item == null);
 				}
 			}
 
@@ -71,7 +71,7 @@ namespace YooTools.HierarchyDrawer {
 				}
 
 				fields = requiredFields.ToArray();
-				CachedFieldInfo[componentType] = fields;
+				CachedFieldInfo.Add(componentType, fields);
 			}
 
 			return fields;
