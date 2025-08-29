@@ -1,47 +1,78 @@
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace YooTools.HierarchyDrawer {
 	[CustomPropertyDrawer(typeof(RequiredAttribute))]
 	public class RequiredDrawer : PropertyDrawer {
-		private readonly Texture2D _requiredIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.unity.2d.animation/Editor/Assets/EditorIcons/Dark/d_Warning@2x.png");
+		private readonly GUIContent _warningIcon = EditorGUIUtility.IconContent("console.erroricon.sml");
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-			EditorGUI.BeginProperty(position, label, property);
+		public override VisualElement CreatePropertyGUI(SerializedProperty property) {
+			var root = new VisualElement {
+				style = {
+					flexDirection = FlexDirection.Row, alignItems = Align.Center, paddingTop = 2, paddingBottom = 2
+				}
+			};
 
-			EditorGUI.BeginChangeCheck();
+			var propertyField = new PropertyField(property, property.displayName) {
+				style = {
+					flexGrow = 1f
+				}
+			};
 
-			var requiredFieldRect = new Rect(position.x, position.y, position.width - 20f, position.height);
-			EditorGUI.PropertyField(requiredFieldRect, property, label);
+			root.Add(propertyField);
 
-			// If the field is required but unassigned, show the icon
-			if (IsFieldUnassigned(property)) {
-				var iconRect = new Rect(position.xMax - 18f, requiredFieldRect.y, 16f, 16f);
-				GUI.Label(iconRect, new GUIContent(_requiredIcon, "This field is required and is either missing or empty!"));
-			}
+			var icon = new Image {
+				image = _warningIcon.image,
+				tooltip = "This field is required and is either missing or empty!",
+				style = {
+					width = 16, height = 16, marginLeft = 4
+				}
+			};
 
-			if (EditorGUI.EndChangeCheck()) {
-				property.serializedObject.ApplyModifiedProperties();
-				EditorUtility.SetDirty(property.serializedObject.targetObject);
+			root.Add(icon);
 
-				// Force a repaint of the hierarchy
-				EditorApplication.RepaintHierarchyWindow();
-			}
+			RefreshFieldVisuals(propertyField, icon, property);
 
-			EditorGUI.EndProperty();
+			// Frissítés, ha változik az érték
+			propertyField.RegisterValueChangeCallback(_ => {
+					RefreshFieldVisuals(propertyField, icon, property);
+				}
+			);
+
+			return root;
 		}
 
-		private bool IsFieldUnassigned(SerializedProperty property) {
-			switch (property.propertyType) {
-				case SerializedPropertyType.ObjectReference when property.objectReferenceValue:
-				case SerializedPropertyType.ExposedReference when property.exposedReferenceValue:
-				case SerializedPropertyType.AnimationCurve when property.animationCurveValue is {
-					length: > 0
-				}:
-				case SerializedPropertyType.String when !string.IsNullOrEmpty(property.stringValue):
-					return false;
-				default:
-					return true;
+		private static void RefreshFieldVisuals(PropertyField propertyField, VisualElement icon, SerializedProperty property) {
+			bool isUnassigned = property.propertyType switch {
+				SerializedPropertyType.ObjectReference => property.objectReferenceValue == null,
+				SerializedPropertyType.ExposedReference => property.exposedReferenceValue == null,
+				SerializedPropertyType.AnimationCurve => property.animationCurveValue == null || property.animationCurveValue.length == 0,
+				SerializedPropertyType.String => string.IsNullOrEmpty(property.stringValue),
+				var _ => false
+			};
+
+			// Ikon láthatóság
+			icon.style.display = isUnassigned
+				? DisplayStyle.Flex
+				: DisplayStyle.None;
+
+			// Pirossal jelzés az üres mezőnél
+			if (isUnassigned) {
+				propertyField.style.borderTopColor = Color.red;
+				propertyField.style.borderBottomColor = Color.red;
+				propertyField.style.borderLeftColor = Color.red;
+				propertyField.style.borderRightColor = Color.red;
+				propertyField.style.borderTopWidth = 1;
+				propertyField.style.borderBottomWidth = 1;
+				propertyField.style.borderLeftWidth = 1;
+				propertyField.style.borderRightWidth = 1;
+			} else {
+				propertyField.style.borderTopWidth = 0;
+				propertyField.style.borderBottomWidth = 0;
+				propertyField.style.borderLeftWidth = 0;
+				propertyField.style.borderRightWidth = 0;
 			}
 		}
 	}
